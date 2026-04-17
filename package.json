@@ -1,0 +1,76 @@
+{
+  "name": "marketflow-backend",
+  "version": "1.0.0",
+  "description": "Système de gestion de point de vente - Backend",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "nest build --project app",
+    "start": "nest start app",
+    "start:dev": "nest start --watch app",
+    "start:prod": "node app/dist/main",
+    "install:app": "npm install --prefix app",
+    "prisma:format": "npx prisma-import -s 'app/prisma/models/**/*.prisma' -b 'app/prisma/schema.prisma' -o app/prisma/schema.prisma",
+    "prisma:migrate": "npm run prisma:format && npx prisma migrate dev",
+    "prisma:generate": "npm run prisma:format && npx prisma generate",
+    "prisma:studio": "npx prisma studio --schema=app/prisma/schema.prisma",
+    "dc:up": "docker-compose up -d",
+    "dc:build": "docker-compose up -d --build",
+    "dc:down": "docker-compose down",
+    "dc:stop": "docker-compose stop",
+    "dc:logs": "docker-compose logs -f",
+    "dc:restart": "docker-compose down && docker-compose up -d"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
+    "@prisma/client": "^7.7.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.18.0",
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.1",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.0",
+    "@types/supertest": "^7.0.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.2",
+    "globals": "^17.0.0",
+    "jest": "^30.0.0",
+    "prettier": "^3.4.2",
+    "prisma": "^7.7.0",
+    "prisma-import": "^1.0.5",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.20.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  }
+}

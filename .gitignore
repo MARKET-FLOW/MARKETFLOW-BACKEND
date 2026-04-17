@@ -1,0 +1,36 @@
+# NESTJS 
+/dist
+/thumbnails.db
+
+# SECRETS
+.env
+.env.*
+!.env.example
+
+# PRISMA
+# On garde le schema.prisma, mais on ignore le client généré localement
+/prisma/generated-client
+
+# TESTS
+/coverage
+/generated/prisma
+
+# DEPENDANCES & BUILD
+node_modules/
+dist/
+build/
+.turbo/
+
+# SECRETS
+.env
+.env.*
+!.env.example
+
+# SYSTEME & IDE
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# DOCKER
+docker/data/
