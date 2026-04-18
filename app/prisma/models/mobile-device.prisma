@@ -4,8 +4,8 @@ model MobileDevice {
   userId      String    @map("user_id") @db.Uuid
   deviceName  String    @map("device_name") @db.VarChar(100)
   deviceToken String    @unique @map("device_token") @db.VarChar(255)
-  deviceType  String    @map("device_type") @db.VarChar(10)
-  role        String    @db.VarChar(20)
+  deviceType  DeviceType @map("device_type")
+  role        Role
   isActive    Boolean   @default(true) @map("is_active")
   lastSeenAt  DateTime? @map("last_seen_at")
   deletedAt   DateTime? @map("deleted_at")

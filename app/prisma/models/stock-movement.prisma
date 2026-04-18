@@ -4,7 +4,7 @@ model StockMovement {
   productId      String    @map("product_id") @db.Uuid
   userId         String    @map("user_id") @db.Uuid
   referenceId    String?   @map("reference_id") @db.Uuid
-  movementType   String    @map("movement_type") @db.VarChar(15)
+  movementType   MovementType @map("movement_type")
   quantity       Int
   quantityBefore Int       @map("quantity_before")
   quantityAfter  Int       @map("quantity_after")
