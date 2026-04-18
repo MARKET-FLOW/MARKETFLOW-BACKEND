@@ -1,0 +1,5 @@
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+}

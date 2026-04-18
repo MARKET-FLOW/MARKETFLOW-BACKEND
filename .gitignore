@@ -9,22 +9,17 @@
 
 # PRISMA
 # On garde le schema.prisma, mais on ignore le client généré localement
+**/generated/prisma
 /prisma/generated-client
 
 # TESTS
 /coverage
-/generated/prisma
 
 # DEPENDANCES & BUILD
 node_modules/
 dist/
 build/
 .turbo/
-
-# SECRETS
-.env
-.env.*
-!.env.example
 
 # SYSTEME & IDE
 .vscode/

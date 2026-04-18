@@ -10,16 +10,16 @@
     "start:dev": "npm run start:dev --prefix app",
     "start:prod": "npm run start:prod --prefix app",
     "install:app": "npm install --prefix app",
-    "prisma:format": "npx prisma-import -s 'app/prisma/base.prisma' -s 'app/prisma/models/**/*.prisma' -o app/prisma/schema.prisma",
+    "prisma:format": "npx prisma-import -s 'app/prisma/base.prisma' -s 'app/prisma/enums/**/*.prisma' -s 'app/prisma/models/**/*.prisma' -o app/prisma/schema.prisma",
     "prisma:migrate": "npm run prisma:format && cd app && npx prisma migrate dev",
     "prisma:generate": "npm run prisma:format && cd app && npx prisma generate",
     "prisma:studio": "cd app && npx prisma studio",
-    "dc:up": "docker-compose up -d",
-    "dc:build": "docker-compose up -d --build",
-    "dc:down": "docker-compose down",
-    "dc:stop": "docker-compose stop",
-    "dc:logs": "docker-compose logs -f",
-    "dc:restart": "docker-compose down && docker-compose up -d"
+    "dc:up": "docker compose up -d --remove-orphans",
+    "dc:build": "docker compose up -d --build",
+    "dc:down": "docker compose down",
+    "dc:stop": "docker compose stop",
+    "dc:logs": "docker compose logs -f",
+    "dc:restart": "docker compose down && docker compose up -d"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

@@ -7,11 +7,11 @@ model Sale {
   totalAmount     Decimal   @map("total_amount") @db.Decimal(12, 2)
   taxAmount       Decimal   @map("tax_amount") @db.Decimal(12, 2)
   discountAmount  Decimal   @default(0) @map("discount_amount") @db.Decimal(12, 2)
-  paymentMethod   String    @map("payment_method") @db.VarChar(20)
+  paymentMethod   PaymentMethod @map("payment_method")
   amountPaid      Decimal   @map("amount_paid") @db.Decimal(12, 2)
   changeAmount    Decimal   @map("change_amount") @db.Decimal(12, 2)
-  status          String    @db.VarChar(15)
-  origin          String    @default("pos") @db.VarChar(15)
+  status          SaleStatus
+  origin          SaleOrigin @default(POS)
   mobileDeviceId  String?   @map("mobile_device_id") @db.Uuid
   synced          Boolean   @default(false)
   deletedAt       DateTime? @map("deleted_at")

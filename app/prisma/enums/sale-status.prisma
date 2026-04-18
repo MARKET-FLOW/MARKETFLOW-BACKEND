@@ -1,0 +1,6 @@
+enum SaleStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}

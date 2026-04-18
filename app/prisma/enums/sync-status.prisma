@@ -1,0 +1,6 @@
+enum SyncStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
