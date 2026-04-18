@@ -1,0 +1,24 @@
+model CashSession {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  storeId         String    @map("store_id") @db.Uuid
+  cashierId       String    @map("cashier_id") @db.Uuid
+  openingAmount   Decimal   @map("opening_amount") @db.Decimal(12, 2)
+  closingAmount   Decimal?  @map("closing_amount") @db.Decimal(12, 2)
+  expectedAmount  Decimal?  @map("expected_amount") @db.Decimal(12, 2)
+  difference      Decimal?  @db.Decimal(12, 2)
+  status          String    @db.VarChar(10)
+  openedAt        DateTime  @default(now()) @map("opened_at")
+  closedAt        DateTime? @map("closed_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  // Relations
+  store   Store  @relation(fields: [storeId], references: [id])
+  cashier User   @relation(fields: [cashierId], references: [id])
+  sales   Sale[]
+
+  @@index([storeId, status], name: "idx_cash_store_status")
+  @@index([cashierId], name: "idx_cash_cashier")
+  @@index([openedAt], name: "idx_cash_opened_at")
+  @@index([deletedAt], name: "idx_cash_deleted_at")
+  @@map("cash_sessions")
+}

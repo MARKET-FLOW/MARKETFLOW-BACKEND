@@ -1,0 +1,26 @@
+model Store {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String    @db.VarChar(100)
+  address    String?   @db.Text
+  phone      String?   @db.VarChar(20)
+  settings   Json?     @db.JsonB
+  deletedAt  DateTime? @map("deleted_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  users          User[]
+  categories     Category[]
+  products       Product[]
+  stockMovements StockMovement[]
+  cashSessions   CashSession[]
+  sales          Sale[]
+  saleItems      SaleItem[]
+  mobileDevices  MobileDevice[]
+  syncQueue      SyncQueue[]
+  auditLogs      AuditLog[]
+  refreshTokens  RefreshToken[]
+
+  @@index([deletedAt], name: "idx_stores_active")
+  @@index([createdAt], name: "idx_stores_created_at")
+  @@map("stores")
+}

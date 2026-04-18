@@ -1,0 +1,22 @@
+model AuditLog {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  storeId    String    @map("store_id") @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  action     String    @db.VarChar(50)
+  entityType String    @map("entity_type") @db.VarChar(50)
+  entityId   String    @map("entity_id") @db.Uuid
+  changes    Json?     @db.JsonB
+  ipAddress  String?   @map("ip_address") @db.VarChar(45)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  deletedAt  DateTime? @map("deleted_at")
+
+  // Relations
+  store Store @relation(fields: [storeId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@index([storeId, createdAt], name: "idx_audits_store_date")
+  @@index([userId], name: "idx_audits_user")
+  @@index([entityId], name: "idx_audits_entity")
+  @@index([deletedAt], name: "idx_audits_deleted_at")
+  @@map("audit_logs")
+}

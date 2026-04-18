@@ -1,0 +1,18 @@
+model SyncQueue {
+  id            String    @id @db.Uuid
+  storeId       String    @map("store_id") @db.Uuid
+  operationType String    @map("operation_type") @db.VarChar(40)
+  payload       String    @db.Text
+  status        String    @default("PENDING") @db.VarChar(10)
+  retryCount    Int       @default(0) @map("retry_count")
+  errorMessage  String?   @map("error_message") @db.Text
+  createdAt     DateTime  @map("created_at")
+  syncedAt      DateTime? @map("synced_at")
+
+  // Relations
+  store Store @relation(fields: [storeId], references: [id])
+
+  @@index([storeId, status], name: "idx_sync_store_status")
+  @@index([createdAt], name: "idx_sync_date")
+  @@map("sync_queue")
+}

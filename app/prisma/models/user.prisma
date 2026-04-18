@@ -1,0 +1,29 @@
+model User {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  storeId      String    @map("store_id") @db.Uuid
+  username     String    @unique @db.VarChar(50)
+  email        String    @unique @db.VarChar(100)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  role         String    @db.VarChar(20) // owner | manager | cashier
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @map("updated_at")
+  lastLoginAt  DateTime? @map("last_login_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  // Relations
+  store          Store           @relation(fields: [storeId], references: [id])
+  products       Product[]
+  stockMovements StockMovement[]
+  cashSessions   CashSession[]
+  sales          Sale[]
+  mobileDevices  MobileDevice[]
+  auditLogs      AuditLog[]
+  refreshTokens  RefreshToken[]
+
+  @@index([storeId, deletedAt], name: "idx_users_store_active")
+  @@index([email], name: "idx_users_email")
+  @@index([username], name: "idx_users_username")
+  @@index([deletedAt], name: "idx_users_deleted_at")
+  @@map("users")
+}

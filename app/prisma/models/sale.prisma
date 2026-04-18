@@ -1,0 +1,33 @@
+model Sale {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  storeId         String    @map("store_id") @db.Uuid
+  saleNumber      String    @map("sale_number") @db.VarChar(30)
+  cashierId       String    @map("cashier_id") @db.Uuid
+  cashSessionId   String    @map("cash_session_id") @db.Uuid
+  totalAmount     Decimal   @map("total_amount") @db.Decimal(12, 2)
+  taxAmount       Decimal   @map("tax_amount") @db.Decimal(12, 2)
+  discountAmount  Decimal   @default(0) @map("discount_amount") @db.Decimal(12, 2)
+  paymentMethod   String    @map("payment_method") @db.VarChar(20)
+  amountPaid      Decimal   @map("amount_paid") @db.Decimal(12, 2)
+  changeAmount    Decimal   @map("change_amount") @db.Decimal(12, 2)
+  status          String    @db.VarChar(15)
+  origin          String    @default("pos") @db.VarChar(15)
+  mobileDeviceId  String?   @map("mobile_device_id") @db.Uuid
+  synced          Boolean   @default(false)
+  deletedAt       DateTime? @map("deleted_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  store        Store        @relation(fields: [storeId], references: [id])
+  cashier      User         @relation(fields: [cashierId], references: [id])
+  cashSession  CashSession  @relation(fields: [cashSessionId], references: [id])
+  mobileDevice MobileDevice? @relation(fields: [mobileDeviceId], references: [id])
+  saleItems    SaleItem[]
+
+  @@unique([storeId, saleNumber], name: "idx_sales_store_number")
+  @@index([storeId, createdAt], name: "idx_sales_store_date")
+  @@index([cashierId], name: "idx_sales_cashier")
+  @@index([cashSessionId], name: "idx_sales_session")
+  @@index([deletedAt], name: "idx_sales_deleted_at")
+  @@map("sales")
+}
