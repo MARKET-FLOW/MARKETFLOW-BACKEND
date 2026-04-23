@@ -17,7 +17,7 @@ services:
       interval: 20s
       timeout: 10s
       retries: 10
-      start_period: ${START_PERIOD:-5}s
+      start_period: ${START_PERIOD:-30}s
 
   # Redis service
   redis:
@@ -33,7 +33,7 @@ services:
       interval: 20s
       timeout: 10s
       retries: 10
-      start_period: 15s
+      start_period: 30s
     restart: unless-stopped
 
   # API service
@@ -59,12 +59,13 @@ services:
       interval: 60s
       timeout: 5s
       retries: 3
-      start_period: 15s
+      start_period: 50s
     ports:
       - "${API_PORT}:3000"
     volumes:
-      - ./app:/app  
+      - .:/app
       - /app/node_modules 
+      - /app/dist
     restart: unless-stopped
     
     
