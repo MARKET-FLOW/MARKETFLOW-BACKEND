@@ -11,6 +11,7 @@
 # On garde le schema.prisma, mais on ignore le client généré localement
 **/generated/prisma
 /prisma/generated-client
+migration_lock.toml
 
 # TESTS
 /coverage
