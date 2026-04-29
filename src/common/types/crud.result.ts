@@ -1,3 +1,4 @@
+import { ErrorMessage } from './error.message';
 import { GlobalAppResult } from './global-app.result';
 
 export class CRUDResult<T> extends GlobalAppResult<T> {
@@ -5,7 +6,7 @@ export class CRUDResult<T> extends GlobalAppResult<T> {
 
   constructor(
     data: T | null = null,
-    error: string | null = null,
+    error: ErrorMessage | null = null,
     statusCode: number = 200,
   ) {
     super(data, error);
@@ -23,7 +24,7 @@ export class CRUDResult<T> extends GlobalAppResult<T> {
    * Helper pour créer une réponse d'erreur.
    */
   static crud_error<T>(
-    message: string,
+    message: ErrorMessage,
     statusCode: number = 500,
   ): CRUDResult<T> {
     return new CRUDResult<T>(null, message, statusCode);
@@ -34,6 +35,6 @@ export class CRUDResult<T> extends GlobalAppResult<T> {
     if (this.isSuccess) {
       return `[CRUDResult Success] Status: ${this.statusCode}, Data: ${JSON.stringify(this.data)}`;
     }
-    return `[CRUDResult Error] Status: ${this.statusCode}, Error: ${this.error}`;
+    return `[CRUDResult Error] Status: ${this.statusCode}, Error: ${this.error.getMessage()}`;
   }
 }

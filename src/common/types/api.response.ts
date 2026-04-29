@@ -1,15 +1,16 @@
 // app/common/results/api-base.response.ts
 import { Response } from 'express';
+import { ErrorMessage } from './error.message';
 
 export class ApiResponse<T> {
   readonly success: boolean;
   readonly result: T | null;
-  readonly error: string | null;
+  readonly error: ErrorMessage | null;
 
   constructor(
     success: boolean,
     result: T | null = null,
-    error: string | null = null,
+    error: ErrorMessage | null = null,
   ) {
     if (success && error !== null) throw new Error('Erreur sur success: True');
     if (!success && result !== null)
@@ -30,7 +31,7 @@ export class ApiResponse<T> {
   }
 
   static error_response<T>(
-    error_message: string,
+    error_message: ErrorMessage,
     res: Response,
     statusCode: number,
   ): ApiResponse<T> {

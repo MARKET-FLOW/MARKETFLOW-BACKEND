@@ -1,8 +1,10 @@
+import { ErrorMessage } from './error.message';
+
 export abstract class GlobalAppResult<T> {
   protected readonly _data: T | null;
-  protected readonly _error: string | null;
+  protected readonly _error: ErrorMessage | null;
 
-  constructor(data: T | null = null, error: string | null = null) {
+  constructor(data: T | null = null, error: ErrorMessage | null = null) {
     if (data !== null && error !== null) {
       throw new Error(
         'Une réponse ne peut pas contenir à la fois des données et une erreur.',
@@ -49,7 +51,7 @@ export abstract class GlobalAppResult<T> {
    * Retourne le message d'erreur.
    * @throws Error si c'est un succès.
    */
-  get error(): string {
+  get error(): ErrorMessage {
     if (this._error === null) {
       throw new Error(
         "Tentative d'accéder à l'erreur sur une réponse de succès.",
