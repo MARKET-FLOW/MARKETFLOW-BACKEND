@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { GlobalAppResult } from './global-app.result';
 import { UNKNOWN_SERVICE } from '../constants/result.constant';
 import { ApiResponse } from './api.response';
+import { ErrorMessage } from './error.message';
 
 export class ServiceResult<T> extends GlobalAppResult<T> {
   public readonly serviceName: string;
@@ -9,7 +10,7 @@ export class ServiceResult<T> extends GlobalAppResult<T> {
 
   constructor(
     data: T | null = null,
-    error: string | null = null,
+    error: ErrorMessage | null = null,
     statusCode: number = 200,
     serviceName: string = UNKNOWN_SERVICE,
   ) {
@@ -18,18 +19,12 @@ export class ServiceResult<T> extends GlobalAppResult<T> {
     this.statusCode = statusCode;
   }
 
-  /**
-   * Fidèle à ta logique Python : convertit le résultat du service
-   * en une réponse API standardisée.
-   */
   to_HTTP_api_base_response(res: Response): ApiResponse<T> {
     if (this.isError) {
       return ApiResponse.error_response(this.error, res, this.statusCode);
     }
     return ApiResponse.success_response(this.data, res, this.statusCode);
   }
-
-  // --- Helpers (Méthodes Statiques) ---
 
   static success_service<T>(
     data: T,
@@ -40,7 +35,7 @@ export class ServiceResult<T> extends GlobalAppResult<T> {
   }
 
   static error_service<T>(
-    error_message: string,
+    error_message: ErrorMessage,
     statusCode: number = 400,
     serviceName: string = UNKNOWN_SERVICE,
   ): ServiceResult<T> {
