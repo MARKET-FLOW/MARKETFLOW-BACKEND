@@ -1,7 +1,7 @@
 services:
   # Database service
   db:
-    mem_limit: 512m
+    mem_limit: 256m
     image: postgres:15-alpine
     container_name: marketflow_db
     environment:
@@ -22,7 +22,7 @@ services:
 
   # Redis service
   redis:
-    mem_limit: 512m
+    mem_limit: 256m
     image: redis:7-alpine
     container_name: marketflow_redis
     ports:
@@ -40,7 +40,7 @@ services:
 
   # API service
   api:
-    mem_limit: 1g
+    mem_limit: 512m
     build:
       context: .
       dockerfile: Dockerfile

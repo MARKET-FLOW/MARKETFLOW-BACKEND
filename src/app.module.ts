@@ -14,9 +14,20 @@ import { SalesModule } from './sales/sales.module';
 import { StockMovementsModule } from './stock-movements/stock-movements.module';
 import { StoresModule } from './stores/stores.module';
 import { SyncQueuesModule } from './sync-queues/sync-queues.module';
+import { CacheModule, CacheModuleOptions } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async (): Promise<CacheModuleOptions> => ({
+        store: (await redisStore({
+          url: process.env.REDIS_URL,
+          ttl: 600,
+        })) as any,
+      }),
+    }),
     PrismaModule,
     UsersModule,
     AuditLogsModule,
