@@ -13,7 +13,7 @@
     "prisma:format": "npx prisma-import -s \"prisma/schema.base.prisma\" -s \"prisma/enums/**/*.prisma\" -s \"prisma/models/**/*.prisma\" -o \"prisma/schema.prisma\"",
     "prisma:migrate": "npm run prisma:format && npx prisma migrate dev",
     "prisma:generate": "npm run prisma:format && npx prisma generate",
-    "prisma:apply": "npx prisma migrate dev",
+    "prisma:apply": "npx prisma migrate deploy",
     "prisma:studio": "npx prisma studio",
     "dc:up": "docker compose up -d --remove-orphans",
     "dc:build": "docker compose up -d --build",
