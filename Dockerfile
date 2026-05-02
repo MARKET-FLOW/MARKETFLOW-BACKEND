@@ -5,6 +5,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY prisma ./prisma/
+RUN apk add --no-cache openssl
 RUN npx prisma generate
 
 COPY . . 
