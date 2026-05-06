@@ -16,9 +16,16 @@ import { StoresModule } from './stores/stores.module';
 import { SyncQueuesModule } from './sync-queues/sync-queues.module';
 import { CacheModule, CacheModuleOptions } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      expandVariables: true,
+    }),
+
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: async (): Promise<CacheModuleOptions> => ({
@@ -28,6 +35,7 @@ import { redisStore } from 'cache-manager-redis-yet';
         })) as any,
       }),
     }),
+
     PrismaModule,
     UsersModule,
     AuditLogsModule,

@@ -71,9 +71,8 @@ services:
       - '${API_PORT}:3000'
       - '5555:5555'
     volumes:
-      - .:/app
+      - .:/app:delegated
       - /app/node_modules
-      - /app/dist
     restart: unless-stopped
 
 volumes:
