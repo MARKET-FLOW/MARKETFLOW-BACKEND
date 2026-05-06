@@ -1,11 +1,16 @@
 // app/common/results/api-base.response.ts
 import { Response } from 'express';
 import { ErrorMessage } from './error.message';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ApiResponse<T> {
+  @ApiProperty()
   readonly success: boolean;
-  readonly result: T | null;
+
+  @ApiProperty()
   readonly error: ErrorMessage | null;
+
+  readonly result: T | null;
 
   constructor(
     success: boolean,
