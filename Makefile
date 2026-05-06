@@ -1,46 +1,84 @@
 # Variables
 DC = docker compose
 EXEC = $(DC) exec api
-FORMAT=npx prisma-import -s \"prisma/schema.base.prisma\" -s \"prisma/enums/**/*.prisma\" -s \"prisma/models/**/*.prisma\" -o \"prisma/schema.prisma\"
+FORMAT = pnpm exec prisma-import -s "prisma/schema.base.prisma" -s "prisma/enums/**/*.prisma" -s "prisma/models/**/*.prisma" -o "prisma/schema.prisma"
 
-#.PHONY indique à make que ce ne sont pas des fichiers physiques
-.PHONY: up down build migrate generate apply logs shell
+.PHONY: up down build migrate generate apply install api_logs db_logs redis_logs api_shell
 
 # --- DOCKER ---
 up:
 	$(DC) up -d --remove-orphans
 
+
 down:
 	$(DC) down
+
 
 build:
 	$(DC) build --no-cache
 
-# --- PRISMA (Migrations) ---
-# Utilise cette commande pour synchroniser ta DB depuis ton terminal/faire une migration
+
+# --- PRISMA (Toutes les commandes passent par Docker via $(EXEC)) ---
 migrate:
-	$(FORMAT) 
-	npx prisma migrate dev
-
-# Génère le client Prisma
-generate:
-	npx prisma generate
-
-# Appliquer une migration d'un autre dev
-apply:
 	$(FORMAT)
-	npx prisma migrate deploy
-	npx prisma generate
+	$(EXEC) pnpm run prisma:migrate
 
-# --- DEV ---
+
+generate:
+	$(EXEC) pnpm run prisma:generate
+
+
+apply:
+	$(EXEC) pnpm run prisma:apply
+
+
+# --- DÉPENDANCES ---
+install:
+	pnpm install
+
+
+# --- PRISMA STUDIO ---
+studio:
+	$(EXEC) sh -c "PRISMA_STUDIO_HOST=0.0.0.0 pnpm exec prisma studio --browser none --port 5555"
+
+
+# --- DEV (LOGS & SHELL) ---
 api_logs:
 	$(DC) logs -f api
+
 
 db_logs:
 	$(DC) logs -f db
 
+
 redis_logs:
 	$(DC) logs -f redis
 
-shell:
+
+api_shell:
 	$(DC) exec api sh
+
+
+# --- SERVICES SPÉCIFIQUES ---
+
+# Lancer un service (ex: make up-svc SVC=redis)
+up-svc:
+	$(DC) up -d $(SVC)
+
+
+# Arrêter et supprimer un service (ex: make down-svc SVC=db)
+down-svc:
+	$(DC) down $(SVC)
+
+stop-svc:
+	$(DC) stop $(SVC)
+
+
+# Redémarrer un service (ex: make restart-svc SVC=api)
+restart-svc:
+	$(DC) restart $(SVC)
+
+
+# Accès direct à la base de données en ligne de commande
+db-shell:
+	docker compose exec db psql -U $(USER) -d $(DB)
