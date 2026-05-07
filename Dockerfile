@@ -9,11 +9,10 @@ COPY pnpm-lock.yaml package.json ./
 RUN pnpm install --frozen-lockfile
 RUN apk add --no-cache openssl
 
-COPY prisma ./prisma/
-RUN pnpm exec prisma generate
-
 COPY . .
+
+RUN pnpm exec prisma generate
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy && pnpm run start:dev"]
+CMD ["sh", "-c", "pnpm exec prisma migrate deploy && pnpm run prisma:generate && pnpm start:dev"]
