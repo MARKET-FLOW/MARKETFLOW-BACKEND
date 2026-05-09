@@ -1,6 +1,6 @@
 FROM node:22-alpine
 
-RUN npm install -g pnpm && apk add --no-cache openssl
+RUN npm install -g pnpm && apk add --no-cache openssl dos2unix
 
 WORKDIR /app
 
