@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -28,12 +28,24 @@ import { ConfigModule } from '@nestjs/config';
 
     CacheModule.registerAsync({
       isGlobal: true,
-      useFactory: async (): Promise<CacheModuleOptions> => ({
-        store: (await redisStore({
-          url: process.env.REDIS_URL,
-          ttl: 600,
-        })) as any,
-      }),
+      useFactory: async (): Promise<CacheModuleOptions> => {
+        try {
+          if (process.env.REDIS_URL) {
+            return {
+              store: await redisStore({
+                url: process.env.REDIS_URL,
+                ttl: 600,
+              }),
+            };
+          }
+        } catch (error) {
+          Logger.warn('Redis not available, using in-memory cache');
+          console.log(
+            `Exception while doing something: ${error instanceof Error ? error.message : String(error)}`,
+          );
+        }
+        return { ttl: 600 };
+      },
     }),
 
     PrismaModule,

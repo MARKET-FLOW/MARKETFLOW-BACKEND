@@ -1,6 +1,16 @@
+# Détection de l'OS
+ifeq ($(OS),Windows_NT)
+    # Sur Windows, Docker Desktop gère souvent la conversion des droits
+    # automatiquement vers l'utilisateur courant, on peut souvent omettre le --user
+    USER_ARG =
+else
+    # Sur Linux/Mac, on récupère l'UID/GID pour éviter les problèmes de droits
+    USER_ARG = --user $(shell id -u):$(shell id -g)
+endif
+
 # Variables
 DC = docker compose
-EXEC = $(DC) exec api
+EXEC = $(DC) exec $(USER_ARG) api
 FORMAT = pnpm exec prisma-import -s "prisma/schema.base.prisma" -s "prisma/enums/**/*.prisma" -s "prisma/models/**/*.prisma" -o "prisma/schema.prisma"
 
 .PHONY: up down build migrate generate apply install api_logs db_logs redis_logs api_shell
