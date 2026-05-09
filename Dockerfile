@@ -1,19 +1,22 @@
-FROM node:22-alpine AS builder
+FROM node:22-alpine
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm && apk add --no-cache openssl
 
 WORKDIR /app
 
 COPY pnpm-lock.yaml package.json ./
 
-RUN pnpm install --frozen-lockfile
-RUN apk add --no-cache openssl
+RUN printf 'ignore-scripts=false\nunsafe-perm=true\n' > /app/.npmrc
 
-COPY prisma ./prisma/
-RUN pnpm exec prisma generate
+RUN pnpm install --no-frozen-lockfile --ignore-scripts
 
 COPY . .
 
+RUN pnpm exec prisma generate
+
 EXPOSE 3000
 
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy && pnpm run start:dev"]
+COPY scripts/start.sh /app/scripts/start.sh
+RUN chmod +x /app/scripts/start.sh
+
+CMD ["/bin/sh", "/app/scripts/start.sh"]
