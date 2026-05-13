@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 // app/common/results/api-base.response.ts
 import { Response } from 'express';
 import { ErrorMessage } from './error.message';
@@ -10,6 +11,7 @@ export class ApiResponse<T> {
   @ApiProperty()
   readonly error: ErrorMessage | null;
 
+  @ApiProperty()
   readonly result: T | null;
 
   constructor(

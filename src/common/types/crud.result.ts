@@ -1,4 +1,5 @@
-import { ErrorMessage } from './error.message';
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+import { ErrorMessage } from '../types/error.message';
 import { GlobalAppResult } from './global-app.result';
 
 export class CRUDResult<T> extends GlobalAppResult<T> {
@@ -13,28 +14,58 @@ export class CRUDResult<T> extends GlobalAppResult<T> {
     this.statusCode = statusCode;
   }
 
-  /**
-   * Helper pour créer une réponse de succès.
-   */
-  static crud_success<T>(data: T, statusCode: number = 200): CRUDResult<T> {
-    return new CRUDResult<T>(data, null, statusCode);
+  static crud_success<T>(
+    argsOrData: { data: T; statusCode?: number } | T,
+    statusCode?: number,
+  ): CRUDResult<T> {
+    if (
+      typeof argsOrData === 'object' &&
+      argsOrData !== null &&
+      'data' in argsOrData
+    ) {
+      const obj = argsOrData as { data: T; statusCode?: number };
+      return new CRUDResult<T>(obj.data, null, obj.statusCode ?? 200);
+    }
+    return new CRUDResult<T>(argsOrData as T, null, statusCode ?? 200);
   }
 
   /**
    * Helper pour créer une réponse d'erreur.
+   * NOTE: On retire <ErrorMessage> ici car on utilise la VRAIE classe ErrorMessage importée
    */
   static crud_error<T>(
-    message: ErrorMessage,
-    statusCode: number = 500,
+    argsOrError:
+      | { error_message: ErrorMessage; statusCode?: number }
+      | ErrorMessage,
+    statusCode?: number,
   ): CRUDResult<T> {
-    return new CRUDResult<T>(null, message, statusCode);
+    if (
+      typeof argsOrError === 'object' &&
+      argsOrError !== null &&
+      'error_message' in (argsOrError as any)
+    ) {
+      const obj = argsOrError as {
+        error_message: ErrorMessage;
+        statusCode?: number;
+      };
+      return new CRUDResult<T>(null, obj.error_message, obj.statusCode ?? 500);
+    }
+    return new CRUDResult<T>(
+      null,
+      argsOrError as ErrorMessage,
+      statusCode ?? 500,
+    );
   }
 
-  // Équivalent du __repr__ pour le debug
   toString(): string {
     if (this.isSuccess) {
       return `[CRUDResult Success] Status: ${this.statusCode}, Data: ${JSON.stringify(this.data)}`;
     }
-    return `[CRUDResult Error] Status: ${this.statusCode}, Error: ${this.error.getMessage()}`;
+    // On utilise une petite vérification pour le message d'erreur
+    const msg =
+      this.error instanceof ErrorMessage
+        ? this.error.getMessage()
+        : 'Unknown error';
+    return `[CRUDResult Error] Status: ${this.statusCode}, Error: ${msg}`;
   }
 }

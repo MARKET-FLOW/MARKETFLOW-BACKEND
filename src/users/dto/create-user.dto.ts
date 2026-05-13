@@ -1,6 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Role } from 'prisma/src/generated/prisma';
+import { ApiResponse } from 'src/common/types/api.response';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -25,7 +27,7 @@ export class CreateUserDto {
     example: 'john.doe@example.com',
   })
   @IsNotEmpty({ message: "L'email est requis" })
-  @IsString()
+  @IsEmail()
   email!: string;
 
 
@@ -40,9 +42,41 @@ export class CreateUserDto {
   
   @ApiProperty({
     description: 'Rôle de l’utilisateur',
-    example: 'user',
+    example: 'Ex: CASHIER, MANAGER,OWNER',
   })
-  @IsNotEmpty({ message: 'Le rôle est requis' })
+  @IsString({
+    message: 'Entrer le role de l\'utiliseur.',
+  })
+  role!: Role;
+}
+
+
+export class FrontReadUser {
   @IsString()
-  role!: string;
+  id!: string;
+
+  @IsString()
+  storeId!: string;
+
+  @IsString()
+  username!: string;
+
+  @IsEmail()
+  email!: string;
+
+  @IsString()
+  role!: Role;       
+
+  @IsString()
+  isActive!: string;   
+
+  @IsString()
+  lastLoginAt!: string;  
+}
+
+export class UserRepository extends ApiResponse<CreateUserDto> {
+  @ApiProperty({
+    description: 'On retourne les donées a la création du user',
+  })
+  storeId!: string;
 }
