@@ -1,5 +1,5 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-// app/common/results/api-base.response.ts
 import { Response } from 'express';
 import { ErrorMessage } from './error.message';
 import { ApiProperty } from '@nestjs/swagger';
@@ -33,8 +33,11 @@ export class ApiResponse<T> {
     res: Response,
     statusCode: number = 200,
   ): ApiResponse<T> {
-    res.status(statusCode);
-    return new ApiResponse(true, data, null);
+    const responseBody = new ApiResponse(true, data, null);
+    
+    res.status(statusCode).json(responseBody);
+    
+    return responseBody;
   }
 
   static error_response<T>(
@@ -42,7 +45,10 @@ export class ApiResponse<T> {
     res: Response,
     statusCode: number,
   ): ApiResponse<T> {
-    res.status(statusCode);
-    return new ApiResponse(false, null as T, error_message);
+    const responseBody = new ApiResponse(false, null as T, error_message);
+    
+    res.status(statusCode).json(responseBody);
+    
+    return responseBody;
   }
 }
