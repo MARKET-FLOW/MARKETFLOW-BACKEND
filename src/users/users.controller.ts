@@ -3,8 +3,10 @@ import { Controller, Post, Body, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response } from 'express';
 import { CreateUserDto, FrontUserInfos } from './dto/create-user.dto';
-import { ApiOperation, ApiResponse as SwaggerApiResponse} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse as SwaggerApiResponse, ApiTags} from '@nestjs/swagger';
+import { USER_TAG } from 'src/common/constants/api-tags.constant';
 
+@ApiTags(USER_TAG)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

@@ -1,7 +1,9 @@
 /* eslint-disable prettier/prettier */
+import { Prisma } from 'prisma/src/generated/prisma';
 import { CRUDResult } from '../types/crud.result';
 import { ErrorType } from '../types/error-type.enum';
 import { ErrorMessage } from '../types/error.message';
+import { handlePrismaError } from './prisma-error.handler';
 
 export function handleGenericError<T>(
   error: unknown,
@@ -17,4 +19,17 @@ export function handleGenericError<T>(
     ),
     statusCode: 500,
   });
+}
+
+
+export function handleProjectErrors<T>(error: unknown): CRUDResult<T> {
+  if (
+    error instanceof Prisma.PrismaClientKnownRequestError ||
+    error instanceof Prisma.PrismaClientValidationError ||
+    error instanceof Prisma.PrismaClientUnknownRequestError
+  ) {
+    return handlePrismaError<T>(error);
+  }
+
+  return handleGenericError<T>(error);
 }
