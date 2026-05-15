@@ -83,6 +83,8 @@ down-svc:
 stop-svc:
 	$(DC) stop $(SVC)
 
+build-svc:
+	$(DC) build --no-cache $(SVC)
 
 # Redémarrer un service (ex: make restart-svc SVC=api)
 restart-svc:
