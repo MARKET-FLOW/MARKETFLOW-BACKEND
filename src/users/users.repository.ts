@@ -15,7 +15,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 @Injectable()
 export class UsersRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  
 
   // fonction pour créer un tilisateur
   async createUser(userDto: CreateUserDto): Promise<CRUDResult<User>> {
@@ -38,9 +37,7 @@ export class UsersRepository {
     } catch (error) {
       return handleProjectErrors<User>(error);
     }
-
   }
-
 
   // fonction pour récupérer touts les users de la db
   async getAllUsers(admin?: string): Promise<CRUDResult<User[]>> {

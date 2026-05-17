@@ -17,8 +17,6 @@ import { UsersRepository } from './users.repository';
 const USERS_LIST_CACHE_ID: string = 'users:list';
 
 
-
-
 @Injectable()
 export class UsersService {
   constructor(
