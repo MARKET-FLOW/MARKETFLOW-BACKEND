@@ -93,3 +93,13 @@ export class FrontUserInfos extends ApiResponse<FrontReadUser> {
   })
   declare result: FrontReadUser;
 }
+
+
+export class ListFrontUserInfos extends ApiResponse<FrontReadUser[]> {
+  @ApiProperty({
+    type: () => FrontReadUser,
+    isArray: true,
+    description: 'On retourne une liste de users de type FrontReadUser',
+  })
+  declare result: FrontReadUser[];
+}
