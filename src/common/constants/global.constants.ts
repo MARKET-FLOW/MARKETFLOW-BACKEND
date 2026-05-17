@@ -1,0 +1,1 @@
+export const ADMIN_SCOPE = "1234"
