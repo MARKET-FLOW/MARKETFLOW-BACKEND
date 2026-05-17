@@ -11,6 +11,12 @@ import { CacheDuration } from 'src/common/cache/cache.duration.enum';
 import { ErrorMessage } from 'src/common/types/error.message';
 import { ErrorType } from 'src/common/types/error-type.enum';
 
+
+// Définition de quelques constantes du fichier
+const USERS_LIST_CACHE_ID: string = "users:list"
+
+
+
 @Injectable()
 export class UsersService {
 
@@ -41,7 +47,8 @@ export class UsersService {
     try {
       const userToFront = UserMapper.toFront(repo_user.data);
       const cache_key: string = CacheKeyFactory.create(CacheDomain.USER, repo_user.data.id);
-      await this.redis.set(cache_key, userToFront, CacheDuration.USER_DURATION.valueOf()); // Cache pour 1 heure
+      await this.redis.set(cache_key, userToFront, CacheDuration.USER_DURATION.valueOf()); // Cache pour 1 heure.
+      await this.redis.delete(USERS_LIST_CACHE_ID)
       return ServiceResult.success_service(
         userToFront,
         repo_user.statusCode
@@ -60,5 +67,55 @@ export class UsersService {
 
   }
 
+
+  // fonction service pour lire tous les utilisateurs
+  async serviceGetAllUsers(): Promise<ServiceResult<FrontReadUser[]>> {
+    
+    // On checke d'abord dans le cahce
+    const cache_data = await this.redis.get<FrontReadUser[]>(USERS_LIST_CACHE_ID);
+
+    if (cache_data !== null){
+      return ServiceResult.success_service(
+        cache_data,
+        200
+      ) 
+    }
+
+    // Si pas de données dans le cache, on va les chercher dans la base de données
+    const users = await this.userRepository.getAllUsers();
+
+    if (users.isError){
+      console.log("Erreur dans SERVICE USER: fn serviceGetAllUsers")
+      return ServiceResult.error_service(
+        users.error,
+        users.statusCode,
+        'SERVICE USER'
+      )
+    }
+
+    try {
+
+      const frontUsers = users.data.map((user) => UserMapper.toFront(user))
+      const cache_key: string = CacheKeyFactory.create(CacheDomain.USER, USERS_LIST_CACHE_ID);
+      await this.redis.set(cache_key, frontUsers, CacheDuration.LISTE_USERS_DURATION.valueOf())
+
+      return ServiceResult.success_service(
+        frontUsers,
+        users.statusCode
+      )
+
+    } catch (error) {
+      console.error("Erreur de conversion des données ou de mise en cache: ", error)
+      return ServiceResult.error_service(
+        new ErrorMessage(
+          ErrorType.INTERNAL_SERVER_ERROR,
+          "Erreur Interne ou erreur de conversion des données"
+        ),
+        500,
+        "SERVICE USER"
+      );
+    }
+    
+  }
  
 }
