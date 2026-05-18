@@ -1,27 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSaleDto } from './dto/create-sales.dto';
 import { UpdateSaleDto } from './dto/update-sales.dto';
+import { SalesRepository } from './sales.repository';
+import { CRUDResult } from 'src/common/types/crud.result';
+import { Sale } from 'prisma/src/generated/prisma';
 
 @Injectable()
 export class SalesService {
+  constructor(private readonly salesRepository: SalesRepository) {}
 
-  create(createSaleDto: CreateSaleDto) {
-    return 'This action adds a new sales';
+  // Appelle le repository pour créer une vente
+  async create(createSaleDto: CreateSaleDto): Promise<CRUDResult<Sale>> {
+    return this.salesRepository.createSale(createSaleDto);
   }
 
-  findAll() {
-    return `This action returns all sales`;
+  // Appelle le repository pour récupérer toutes les ventes
+  async findAll(storeId?: string): Promise<CRUDResult<Sale[]>> {
+    return this.salesRepository.findAllSales(storeId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sales`;
+  // Appelle le repository pour récupérer une seule vente par son ID
+  async findOne(id: string): Promise<CRUDResult<Sale>> {
+    return this.salesRepository.findSaleById(id);
   }
 
-  update(id: number, updateSaleDto: UpdateSaleDto) {
-    return `This action updates a #${id} sales`;
+  // Appelle le repository pour mettre à jour une vente
+  async update(id: string, updateSaleDto: UpdateSaleDto): Promise<CRUDResult<Sale>> {
+    return this.salesRepository.updateSale(id, updateSaleDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} sales`;
+  // Appelle le repository pour supprimer une vente
+  async remove(id: string): Promise<CRUDResult<Sale>> {
+    return this.salesRepository.deleteSale(id);
   }
 }
+
