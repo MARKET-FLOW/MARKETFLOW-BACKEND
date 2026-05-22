@@ -86,6 +86,7 @@ export class FrontReadUser {
   @IsUUID()
   id!: UUID;
 
+  @ApiProperty({ description: 'ID du store associé' })
   @Expose()
   @ApiProperty({
     description: "Le store associé a l'utilisateur",
@@ -131,6 +132,7 @@ export class FrontReadUser {
   })
   deletedAt!: string;
 }
+
 
 export class FrontUserInfos extends ApiResponse<FrontReadUser> {
   @ApiProperty({
