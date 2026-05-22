@@ -138,6 +138,61 @@ export class UsersService {
     }
   }
 
+  // fonction service get users by id
+  async serviceGetUserById(id: UUID): Promise<ServiceResult<FrontReadUser>>{
+
+    const cache_key = CacheKeyFactory.create(
+      CacheDomain.USER,
+      id
+    ) 
+
+    const cacheUser = await this.redis.get<FrontReadUser>(
+      cache_key
+    )
+
+    if (cacheUser !== null) { 
+      return ServiceResult.success_service(
+        cacheUser,
+        200
+      )
+    }
+
+    const user_repo = await this.userRepository.getUserByID(id);
+    
+    if (user_repo.isError){
+      return ServiceResult.error_service(
+        user_repo.error,
+        user_repo.statusCode,
+        'USER SERVICE'
+      )
+    }
+
+    // mise en cache
+    try {
+      const frontUser = UserMapper.toFront(user_repo.data);
+      await this.redis.set(
+        cache_key,
+        frontUser,
+        CacheDuration.USER_DURATION.valueOf()
+      ) 
+      
+      return ServiceResult.success_service(
+        frontUser,
+        user_repo.statusCode
+      )
+      
+    } catch (error) {
+      console.error(`[userService.serviceGetUserById] ==> ERREUR: ${error}`)
+      return ServiceResult.error_service(
+        new ErrorMessage(
+          ErrorType.INTERNAL_SERVER_ERROR,
+          'Erreur de validation ou de mise en cache'
+        ),
+        500,
+      )
+    }
+  }
+
   // fonction pour supprimer un utilisateur
   async serviceDeleteUser(id: UUID): Promise<ServiceResult<string>> {
     try {
