@@ -4,6 +4,7 @@ import { UpdateProductDto } from './dto/update-products.dto';
 
 @Injectable()
 export class ProductsService {
+
   create(createProductDto: CreateProductDto) {
     return 'This action adds a new products';
   }

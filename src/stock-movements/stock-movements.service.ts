@@ -4,6 +4,7 @@ import { UpdateStockMovementDto } from './dto/update-stock-movements.dto';
 
 @Injectable()
 export class StockMovementsService {
+
   create(createStockMovementDto: CreateStockMovementDto) {
     return 'This action adds a new stock-movements';
   }

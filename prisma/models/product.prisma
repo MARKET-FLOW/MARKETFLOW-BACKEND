@@ -23,8 +23,9 @@ model Product {
   saleItems      SaleItem[]
 
   @@unique([storeId, barcode], name: "idx_products_store_barcode")
-  @@index([storeId, categoryId], name: "idx_products_store_category") // combiné pour les filtres catalogue
-  @@index([name], name: "idx_products_name")
+  @@index([storeId, deletedAt], name: "idx_products_store_active")
+  @@index([categoryId], name: "idx_products_category")
   @@index([createdAt], name: "idx_products_created_at")
+  @@index([deletedAt], name: "idx_products_deleted_at")
   @@map("products")
 }

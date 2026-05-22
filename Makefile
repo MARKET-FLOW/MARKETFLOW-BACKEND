@@ -1,4 +1,4 @@
-# Détection de l'OS
+s# Détection de l'OS
 ifeq ($(OS),Windows_NT)
     # Sur Windows, Docker Desktop gère souvent la conversion des droits
     # automatiquement vers l'utilisateur courant, on peut souvent omettre le --user

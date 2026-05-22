@@ -1,21 +1,15 @@
+// app/common/results/api-base.response.ts
 import { Response } from 'express';
 import { ErrorMessage } from './error.message';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ApiResponse<T> {
   @ApiProperty()
   readonly success: boolean;
 
-  @ApiPropertyOptional({
-    description: "Le message d'erreur, présent uniquement si success est false",
-    type: ErrorMessage,
-  })
+  @ApiProperty()
   readonly error: ErrorMessage | null;
 
-  @ApiPropertyOptional({
-    description:
-      'Le résultat de la requête, présent uniquement si success est true',
-  })
   readonly result: T | null;
 
   constructor(
@@ -37,11 +31,8 @@ export class ApiResponse<T> {
     res: Response,
     statusCode: number = 200,
   ): ApiResponse<T> {
-    const responseBody = new ApiResponse(true, data, null);
-
-    res.status(statusCode).json(responseBody);
-
-    return responseBody;
+    res.status(statusCode);
+    return new ApiResponse(true, data, null);
   }
 
   static error_response<T>(
@@ -49,11 +40,7 @@ export class ApiResponse<T> {
     res: Response,
     statusCode: number,
   ): ApiResponse<T> {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    const responseBody = new ApiResponse(false, null as T, error_message);
-
-    res.status(statusCode).json(responseBody);
-
-    return responseBody;
+    res.status(statusCode);
+    return new ApiResponse(false, null as T, error_message);
   }
 }

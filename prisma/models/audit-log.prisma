@@ -16,6 +16,7 @@ model AuditLog {
 
   @@index([storeId, createdAt], name: "idx_audits_store_date")
   @@index([userId], name: "idx_audits_user")
-  @@index([entityType, entityId], name: "idx_audits_entity")
+  @@index([entityId], name: "idx_audits_entity")
+  @@index([deletedAt], name: "idx_audits_deleted_at")
   @@map("audit_logs")
 }

@@ -1,12 +1,3 @@
 export const USER_TAG = 'Users';
-export const STORE_TAG = 'Stores';
 export const PRODUCT_TAG = 'Products';
-export const CATEGORY_TAG = 'Categories';
-export const SALE_TAG = 'Sales';
-export const SALE_ITEM_TAG = 'Sale Items';
-export const STOCK_TAG = 'Stock Movements';
-export const CASH_SESSION_TAG = 'Cash Sessions';
-export const MOBILE_DEVICE_TAG = 'Mobile Devices';
-export const SYNC_TAG = 'Sync';
-export const AUDIT_TAG = 'Audit Logs';
-export const AUTH_TAG = 'Auth';
+export const CASHIER = 'CASHIER';

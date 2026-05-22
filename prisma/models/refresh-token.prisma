@@ -14,6 +14,6 @@ model RefreshToken {
 
   @@index([storeId, userId], name: "idx_tokens_store_user")
   @@index([tokenHash], name: "idx_tokens_hash")
-  @@index([userId, isRevoked], name: "idx_tokens_user_active")
+  @@index([deletedAt], name: "idx_tokens_deleted_at")
   @@map("refresh_tokens")
 }

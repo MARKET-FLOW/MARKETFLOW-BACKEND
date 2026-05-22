@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CashSessionsService } from './cash-sessions.service';
 import { CreateCashSessionDto } from './dto/create-cash-sessions.dto';
 import { UpdateCashSessionDto } from './dto/update-cash-sessions.dto';
@@ -31,10 +23,7 @@ export class CashSessionsController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCashSessionDto: UpdateCashSessionDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateCashSessionDto: UpdateCashSessionDto) {
     return this.cashSessionsService.update(+id, updateCashSessionDto);
   }
 

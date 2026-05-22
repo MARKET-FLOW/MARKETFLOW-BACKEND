@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
-    "moduleResolution": "Node",
+    "moduleResolution": "Node",       // Utilise "Node" avec une majuscule
+    "ignoreDeprecations": "6.0",     // Garde ceci pour passer outre l'alerte TS7.0
     "esModuleInterop": true,
     "isolatedModules": true,
     "declaration": true,
@@ -18,14 +19,9 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
-    "types": [
-      "node",
-      "jest"
-    ]
-  },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/generated"
-  ]
+    "types": ["node"],
+    "paths": {
+      "@prisma/client": ["prisma/generated/prisma"]
+    }
+  }
 }

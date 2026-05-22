@@ -21,8 +21,9 @@ model User {
   auditLogs      AuditLog[]
   refreshTokens  RefreshToken[]
 
-  @@index([storeId], name: "idx_users_store")
+  @@index([storeId, deletedAt], name: "idx_users_store_active")
   @@index([email], name: "idx_users_email")
   @@index([username], name: "idx_users_username")
+  @@index([deletedAt], name: "idx_users_deleted_at")
   @@map("users")
 }

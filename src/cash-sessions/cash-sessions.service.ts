@@ -4,6 +4,7 @@ import { UpdateCashSessionDto } from './dto/update-cash-sessions.dto';
 
 @Injectable()
 export class CashSessionsService {
+
   create(createCashSessionDto: CreateCashSessionDto) {
     return 'This action adds a new cash-sessions';
   }

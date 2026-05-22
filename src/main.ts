@@ -1,19 +1,14 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import 'dotenv/config';
-import redoc from 'redoc-express';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import redoc from 'redoc-express';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api/v1');
-
-  // Filtre global — toutes les exceptions non catchées retournent { success, result, error }
-  app.useGlobalFilters(new GlobalExceptionFilter());
-
+  // activation auto validation swagger
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -29,14 +24,14 @@ async function bootstrap() {
       'Notre application backend de gestion et suivi des ventes de produits',
     )
     .setVersion('1.0')
-    .addBearerAuth() // préparé pour JWT
+    .addTag('nestjs')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
   // redoc configuration
   app.use(
-    '/redocs',
+    'redocs',
     redoc({
       title: 'MARKET-FLOW API Documentation',
       specUrl: '/docs-json',

@@ -6,7 +6,6 @@ model Store {
   settings   Json?     @db.JsonB
   deletedAt  DateTime? @map("deleted_at")
   createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime? @map("updated_at")
 
   // Relations
   users          User[]
@@ -21,6 +20,7 @@ model Store {
   auditLogs      AuditLog[]
   refreshTokens  RefreshToken[]
 
+  @@index([deletedAt], name: "idx_stores_active")
   @@index([createdAt], name: "idx_stores_created_at")
   @@map("stores")
 }

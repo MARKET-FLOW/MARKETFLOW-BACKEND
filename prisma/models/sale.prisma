@@ -16,7 +16,6 @@ model Sale {
   synced          Boolean   @default(false)
   deletedAt       DateTime? @map("deleted_at")
   createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime? @map("updated_at")
 
   // Relations
   store        Store        @relation(fields: [storeId], references: [id])
@@ -29,6 +28,6 @@ model Sale {
   @@index([storeId, createdAt], name: "idx_sales_store_date")
   @@index([cashierId], name: "idx_sales_cashier")
   @@index([cashSessionId], name: "idx_sales_session")
-  @@index([status], name: "idx_sales_status")
+  @@index([deletedAt], name: "idx_sales_deleted_at")
   @@map("sales")
 }

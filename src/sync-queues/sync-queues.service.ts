@@ -4,6 +4,7 @@ import { UpdateSyncQueueDto } from './dto/update-sync-queues.dto';
 
 @Injectable()
 export class SyncQueuesService {
+
   create(createSyncQueueDto: CreateSyncQueueDto) {
     return 'This action adds a new sync-queues';
   }
