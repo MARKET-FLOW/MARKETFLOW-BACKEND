@@ -9,7 +9,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 1. Définir le préfixe global AVANT toute configuration de doc
   app.setGlobalPrefix('api/v1');
 
   // activation auto validation swagger
