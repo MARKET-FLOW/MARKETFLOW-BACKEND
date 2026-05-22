@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEmail,
@@ -13,13 +13,33 @@ import { UUID } from 'node:crypto';
 import { Role } from 'prisma/src/generated/prisma';
 import { ApiResponse } from 'src/common/types/api.response';
 
+// Validation de l'objet store
+export class FrontReadStore {
+  @ApiProperty({ description: 'ID unique du store' })
+  @Expose()
+  id!: UUID;
+
+  @ApiProperty({ description: 'Nom du store' })
+  @Expose()
+  name!: string;
+
+  @ApiProperty({ description: 'Adresse du store', nullable: true })
+  @Expose()
+  address!: string;
+
+  @ApiProperty({ description: 'Téléphone du store', nullable: true })
+  @Expose()
+  phone!: string;
+}
+
+// validation des données front
 export class CreateUserDto {
   @ApiProperty({
     description: 'Id du store du user',
   })
   @IsNotEmpty({ message: 'Le Id du store du user est requis' })
-  @IsString()
-  storeId!: string;
+  @IsUUID()
+  storeId!: UUID;
 
   @ApiProperty({
     description: "Nom d'utilisateur",
@@ -57,7 +77,6 @@ export class CreateUserDto {
   role!: Role;
 }
 
-
 export class FrontReadUser {
   @ApiProperty({
     description: 'ID unique de l’utilisateur',
@@ -69,8 +88,12 @@ export class FrontReadUser {
 
   @ApiProperty({ description: 'ID du store associé' })
   @Expose()
-  @IsString()
-  storeId!: string;
+  @ApiProperty({
+    description: "Le store associé a l'utilisateur",
+    type: () => FrontReadStore,
+  })
+  @Type(() => FrontReadStore)
+  store!: FrontReadStore;
 
   @ApiProperty({ description: 'Nom d’utilisateur' })
   @Expose()
@@ -118,7 +141,6 @@ export class FrontUserInfos extends ApiResponse<FrontReadUser> {
   })
   declare result: FrontReadUser;
 }
-
 
 export class ListFrontUserInfos extends ApiResponse<FrontReadUser[]> {
   @ApiProperty({
