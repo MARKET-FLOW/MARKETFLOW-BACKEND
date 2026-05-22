@@ -112,57 +112,6 @@ export class UsersRepository {
     }
   }
 
-  // fonction pour supprimer un utilisateur
-  async deleteUser(id: UUID): Promise<CRUDResult<string>> {
-    try {
-      // utiliser le soft delete pour marquer l'utilisateur comme supprimé
-      await this.prismaService.user.update({
-        where: {
-          id: id,
-        },
-        data: {
-          isActive: false,
-          deletedAt: new Date(),
-        },
-      });
-
-      return CRUDResult.crud_success('Utilisateur supprimé avec succès', 200);
-    } catch (error) {
-      return handleProjectErrors<string>(error);
-    }
-  }
-
-  // fonction pour récupérer touts les users de la db
-  async getAllUsers(admin?: string): Promise<CRUDResult<User[]>> {
-    try {
-      let users: User[] = [];
-
-      // on fait la requette en fonction de admin ou utilisateur simple
-      if (admin === ADMIN_SCOPE) {
-        users = await this.prismaService.user.findMany();
-      } else {
-        users = await this.prismaService.user.findMany({
-          where: {
-            deletedAt: null,
-          },
-        });
-      }
-
-      if (users === null) {
-        return CRUDResult.crud_error(
-          new ErrorMessage(
-            ErrorType.EMPTY_LIST,
-            'Aucun utilisiteur trouvé. Veuillez en créer un',
-          ),
-          404,
-        );
-      }
-
-      return CRUDResult.crud_success(users, 200);
-    } catch (error) {
-      return handleProjectErrors(error);
-    }
-  }
 
   // fonction pour supprimer un utilisateur
   async deleteUser(id: UUID): Promise<CRUDResult<string>> {
