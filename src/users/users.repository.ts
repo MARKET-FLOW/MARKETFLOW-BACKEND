@@ -2,7 +2,6 @@
 import { Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { UUID } from 'node:crypto';
-import { User } from 'prisma/src/generated/prisma';
 import { ADMIN_SCOPE } from 'src/common/constants/global.constants';
 import { handleProjectErrors } from 'src/common/errors-handlers/generic-error.handler';
 import { CRUDResult } from 'src/common/types/crud.result';
@@ -10,13 +9,16 @@ import { ErrorType } from 'src/common/types/error-type.enum';
 import { ErrorMessage } from 'src/common/types/error.message';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserWithStore } from './global-user/user.message';
+
+
 
 @Injectable()
 export class UsersRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   // fonction pour créer un tilisateur
-  async createUser(userDto: CreateUserDto): Promise<CRUDResult<User>> {
+  async createUser(userDto: CreateUserDto): Promise<CRUDResult<UserWithStore>> {
     const { storeId, username, email, password, role } = userDto;
 
     try {
@@ -30,26 +32,36 @@ export class UsersRepository {
           passwordHash: hashedPassword,
           role,
         },
+        include: {
+          store: true,
+        },
       });
 
       return CRUDResult.crud_success(createdUser, 201);
     } catch (error) {
-      return handleProjectErrors<User>(error);
+      return handleProjectErrors<UserWithStore>(error);
     }
   }
 
   // fonction pour récupérer touts les users de la db
-  async getAllUsers(admin?: string): Promise<CRUDResult<User[]>> {
+  async getAllUsers(admin?: string): Promise<CRUDResult<UserWithStore[]>> {
     try {
-      let users: User[] = [];
+      let users: UserWithStore[] = [];
 
       // on fait la requette en fonction de admin ou utilisateur simple
       if (admin === ADMIN_SCOPE) {
-        users = await this.prismaService.user.findMany();
+        users = await this.prismaService.user.findMany({
+          include: {
+            store: true,
+          },
+        });
       } else {
         users = await this.prismaService.user.findMany({
           where: {
             deletedAt: null,
+          },
+          include: {
+            store: true,
           },
         });
       }
@@ -66,7 +78,37 @@ export class UsersRepository {
 
       return CRUDResult.crud_success(users, 200);
     } catch (error) {
-      return handleProjectErrors(error);
+      return handleProjectErrors<UserWithStore[]>(error);
+    }
+  }
+
+  // fonction pour get un utilisateur par ID
+  async getUserByID(id: UUID): Promise<CRUDResult<UserWithStore>> {
+    try {
+      const user = await this.prismaService.user.findFirst({
+        where: {
+          id: id,
+          isActive: true,
+          deletedAt: null
+        },
+        include: {
+          store: true,
+        },
+      });
+
+      if (user === null) {
+        console.log('[userRepository.getUserById] ==> Utilisateur non trouvé');
+        return CRUDResult.crud_error(
+          new ErrorMessage(
+            ErrorType.NOT_FOUND,
+            'Cet utilisateur est introuvable',
+          ),
+        );
+      }
+
+      return CRUDResult.crud_success(user, 200);
+    } catch (error) {
+      return handleProjectErrors<UserWithStore>(error);
     }
   }
 
@@ -79,13 +121,14 @@ export class UsersRepository {
           id: id,
         },
         data: {
+          isActive: false,
           deletedAt: new Date(),
         },
       });
 
       return CRUDResult.crud_success('Utilisateur supprimé avec succès', 200);
     } catch (error) {
-      return handleProjectErrors(error);
+      return handleProjectErrors<string>(error);
     }
   }
 }

@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiTags,
   ApiResponse as SwaggerApiResponse,
@@ -25,6 +26,8 @@ import {
   ListFrontUserInfos,
 } from './dto/create-user.dto';
 import { UsersService } from './users.service';
+
+
 
 @ApiTags(USER_TAG)
 @Controller('users')
@@ -76,6 +79,33 @@ export class UsersController {
     const service_result = await this.usersService.serviceGetAllUsers(admin);
     return service_result.to_HTTP_api_base_response(_response);
   }
+
+  // controller pour récupérer un utilisateur par Id
+  @Get(':id')
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'UUID'
+  })
+  @ApiOperation({
+    summary: 'Récupérer un utilisateur par Id'
+  })
+  @SwaggerApiResponse({
+    description: 'Route pour récupérer un utilisateur en utilisant son identifiant unique',
+    status: 200,
+    type: FrontUserInfos
+  })
+  @SwaggerApiResponse(
+    {
+      status: 404,
+      description: 'Utilisateur non trouvé pour l\'identifiant fournie'
+    }
+  )
+  async getUserById(@Res() _response: Response, @Param('id') id: UUID){
+    const serviceResult = await this.usersService.serviceGetUserById(id);
+    return serviceResult.to_HTTP_api_base_response(_response);
+  }
+
 
   // controller pour supprimer un utilisateur
   @Delete(':id')
