@@ -113,6 +113,7 @@ export class UsersRepository {
     }
   }
 
+
   // fonction pour supprimer un utilisateur
   async deleteUser(id: UUID): Promise<CRUDResult<string>> {
     try {
