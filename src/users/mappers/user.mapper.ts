@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { plainToInstance } from 'class-transformer';
 import { FrontReadUser } from '../dto/create-user.dto';
-import { User } from 'prisma/src/generated/prisma';
+import { User } from '@prisma/client';
 
 export class UserMapper {
   static toFront(user: User): FrontReadUser {

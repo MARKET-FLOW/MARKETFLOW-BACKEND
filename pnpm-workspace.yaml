@@ -1,0 +1,18 @@
+onlyBuiltDependencies:
+  - prisma
+  - "@prisma/client"
+  - "@prisma/engines"
+  - argon2
+  - esbuild
+  - "@nestjs/core"
+  - "@scarf/scarf"
+  - unrs-resolver
+ignoredBuiltDependencies: []
+allowBuilds:
+  '@nestjs/core': true
+  '@prisma/engines': true
+  '@scarf/scarf': true
+  argon2: true
+  esbuild: true
+  prisma: true
+  unrs-resolver: true

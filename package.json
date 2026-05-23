@@ -4,14 +4,6 @@
   "description": "Système de gestion de point de vente - Backend",
   "private": true,
   "license": "UNLICENSED",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@nestjs/core",
-      "@prisma/engines",
-      "prisma",
-      "unrs-resolver"
-    ]
-  },
   "scripts": {
     "build": "nest build",
     "start": "nest start",
@@ -42,6 +34,7 @@
     "@nestjs/swagger": "^11.3.2",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.7.0",
+    "@prisma/client-runtime-utils": "7.8.0",
     "argon2": "^0.44.0",
     "cache-manager": "^7.2.8",
     "cache-manager-redis-yet": "^5.1.5",
@@ -83,6 +76,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.22.3",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.20.0"
   },

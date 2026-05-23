@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
 import {
@@ -10,7 +9,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { UUID } from 'node:crypto';
-import { Role } from 'prisma/src/generated/prisma';
+import { Role } from '@prisma/client';
 import { ApiResponse } from 'src/common/types/api.response';
 
 // Validation de l'objet store
