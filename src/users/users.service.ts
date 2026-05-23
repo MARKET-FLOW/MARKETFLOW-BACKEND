@@ -104,15 +104,6 @@ export class UsersService {
     // Si pas de données dans le cache, on va les chercher dans la base de données
     const users = await this.userRepository.getAllUsers(admin);
 
-    if (users.isError) {
-      console.log('Erreur dans SERVICE USER: fn serviceGetAllUsers');
-      return ServiceResult.error_service(
-        users.error,
-        users.statusCode,
-        'SERVICE USER',
-      );
-    }
-
     try {
       const frontUsers = users.data.map((user) => UserMapper.toFront(user));
       await this.redis.set(
