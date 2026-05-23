@@ -88,10 +88,7 @@ export class UsersService {
     admin?: string,
   ): Promise<ServiceResult<FrontReadUser[]>> {
     // Différentié les clés de cache pour les listes d'utilisateurs en fonction du rôle (admin ou non)
-    const cache_id =
-      admin === ADMIN_SCOPE
-        ? `${USERS_LIST_CACHE_ID}:admin`
-        : USERS_LIST_CACHE_ID;
+    const cache_id = admin === ADMIN_SCOPE ? `${USERS_LIST_CACHE_ID}:admin` : USERS_LIST_CACHE_ID;
     const list_cache_key = CacheKeyFactory.create(CacheDomain.USER, cache_id);
 
     // On checke d'abord dans le cache avec la clé complète
@@ -103,6 +100,15 @@ export class UsersService {
 
     // Si pas de données dans le cache, on va les chercher dans la base de données
     const users = await this.userRepository.getAllUsers(admin);
+    
+    if (users.isError) {
+      console.error("Erreur dans SERVICE USER: fn serviceGetAllUsers")
+      return ServiceResult.error_service(
+        users.error,
+        users.statusCode,
+        'SERVICE USER',
+      );
+    }
 
     try {
       const frontUsers = users.data.map((user) => UserMapper.toFront(user));
