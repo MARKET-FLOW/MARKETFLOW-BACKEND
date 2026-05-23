@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 onlyBuiltDependencies:
   - prisma
   - "@prisma/client"
@@ -16,3 +17,12 @@ allowBuilds:
   esbuild: true
   prisma: true
   unrs-resolver: true
+=======
+allowBuilds:
+  '@nestjs/core': false
+  '@prisma/engines': false
+  '@scarf/scarf': false
+  argon2: false
+  prisma: false
+  unrs-resolver: false
+>>>>>>> f337e3e (premier commit après 1er pull)
