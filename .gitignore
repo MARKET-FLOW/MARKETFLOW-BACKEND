@@ -31,3 +31,7 @@ build/
 
 # DOCKER
 docker/data/
+
+# PNPM store (cache local)
+.pnpm-store/
+pnpm-store/

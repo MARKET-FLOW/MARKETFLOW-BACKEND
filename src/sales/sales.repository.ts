@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSaleDto } from './dto/create-sales.dto';
 import { UpdateSaleDto } from './dto/update-sales.dto';
 import { CRUDResult } from 'src/common/types/crud.result';
-import { Sale } from 'prisma/src/generated/prisma';
+import { Sale } from '@prisma/client';
 import { handleProjectErrors } from 'src/common/errors-handlers/generic-error.handler';
 
 @Injectable()

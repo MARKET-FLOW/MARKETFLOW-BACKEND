@@ -3,7 +3,7 @@ import { CreateSaleDto } from './dto/create-sales.dto';
 import { UpdateSaleDto } from './dto/update-sales.dto';
 import { SalesRepository } from './sales.repository';
 import { CRUDResult } from 'src/common/types/crud.result';
-import { Sale } from 'prisma/src/generated/prisma';
+import { Sale } from '@prisma/client';
 
 @Injectable()
 export class SalesService {

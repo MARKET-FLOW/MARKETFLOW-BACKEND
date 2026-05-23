@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUUID, IsEnum, IsNumber, IsString, IsOptional, IsNotEmpty } from 'class-validator';
-import { PaymentMethod, SaleOrigin, SaleStatus } from 'prisma/src/generated/prisma';
+import { PaymentMethod, SaleOrigin, SaleStatus } from '@prisma/client';
 
 export class CreateSaleDto {
   @ApiProperty({ example: '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d' })
@@ -23,17 +23,17 @@ export class CreateSaleDto {
   @IsUUID()
   cashSessionId!: string;
 
-  @ApiProperty({ example: 100.0 })
+  @ApiProperty({ example: 15000 })
   @IsNotEmpty()
   @IsNumber()
   totalAmount!: number;
 
-  @ApiProperty({ example: 20.0 })
+  @ApiProperty({ example: 2700 })
   @IsNotEmpty()
   @IsNumber()
   taxAmount!: number;
 
-  @ApiProperty({ example: 0.0 })
+  @ApiProperty({ example: 0 })
   @IsOptional()
   @IsNumber()
   discountAmount?: number;
@@ -43,12 +43,12 @@ export class CreateSaleDto {
   @IsEnum(PaymentMethod)
   paymentMethod!: PaymentMethod;
 
-  @ApiProperty({ example: 100.0 })
+  @ApiProperty({ example: 20000 })
   @IsNotEmpty()
   @IsNumber()
   amountPaid!: number;
 
-  @ApiProperty({ example: 0.0 })
+  @ApiProperty({ example: 5000 })
   @IsNotEmpty()
   @IsNumber()
   changeAmount!: number;
@@ -68,5 +68,3 @@ export class CreateSaleDto {
   @IsUUID()
   mobileDeviceId?: string;
 }
-
-

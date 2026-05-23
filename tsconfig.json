@@ -19,9 +19,9 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "paths": {
-      "@prisma/client": ["prisma/generated/prisma"]
+      "@prisma/client": ["prisma/src/generated/prisma"]
     }
   }
 }
