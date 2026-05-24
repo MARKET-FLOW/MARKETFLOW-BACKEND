@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma, Product } from 'prisma/src/generated/prisma';
+import { Prisma, Product } from '@prisma/client';
 import { CRUDResult } from 'src/common/types/crud.result';
 import { handleProjectErrors } from 'src/common/errors-handlers/generic-error.handler';
 import { ADMIN_SCOPE } from 'src/common/constants/global.constants';
