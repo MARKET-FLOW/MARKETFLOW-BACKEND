@@ -1,5 +1,6 @@
-
 pnpm exec prisma migrate deploy || exit 1
+pnpm exec prisma generate || exit 1
+
 # Remove dist folder, ignore errors
 rm -rf /app/dist 2>/dev/null || rm -rf /app/dist || true
 sleep 1

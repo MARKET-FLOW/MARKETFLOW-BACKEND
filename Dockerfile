@@ -2,13 +2,15 @@ FROM node:22-alpine
 
 RUN npm install -g pnpm && apk add --no-cache openssl dos2unix
 
+ENV CI=true
+
 WORKDIR /app
 
-COPY pnpm-lock.yaml package.json ./
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
 
 RUN printf 'ignore-scripts=false\nunsafe-perm=true\n' > /app/.npmrc
 
-RUN pnpm install --no-frozen-lockfile --ignore-scripts
+RUN pnpm install --no-frozen-lockfile
 
 COPY . .
 

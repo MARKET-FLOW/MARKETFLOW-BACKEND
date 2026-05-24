@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Prisma } from 'prisma/src/generated/prisma';
+import { Prisma } from '@prisma/client';
 import { CRUDResult } from '../types/crud.result';
 import { ErrorType } from '../types/error-type.enum';
 import { ErrorMessage } from '../types/error.message';
