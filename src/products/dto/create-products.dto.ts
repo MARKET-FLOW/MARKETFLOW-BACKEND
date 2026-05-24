@@ -7,7 +7,9 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsOptional,
+  IsUUID,
 } from 'class-validator';
+import { UUID } from 'crypto';
 import { ApiResponse } from 'src/common/types/api.response';
 //import type { Store, User } from '@prisma/client';
 
@@ -15,16 +17,16 @@ export class CreateProductDto {
   @ApiProperty({
     description: 'Id du store du produit',
   })
-  @IsString({ message: `L'store_id est une chaîne de caractère` })
+  @IsUUID()
   @IsNotEmpty({ message: `store_id est requis` })
-  storeId!: string;
+  storeId!: UUID;
 
   @ApiProperty({
     description: 'Id du categorie du produit',
   })
-  @IsString({ message: `category_id est une chaîne de caractère` })
+  @IsUUID()
   @IsOptional()
-  categoryId?: string;
+  categoryId?: UUID;
 
   @ApiProperty({
     description: `L'utilisateur qui a crée le produit`,
@@ -112,10 +114,10 @@ export const TransformDate = () =>
 
 export class FrontReadProduct {
   @Expose()
-  storeId!: string;
+  storeId!: UUID;
 
   @Expose()
-  categoryId?: string;
+  categoryId?: UUID;
 
   @Expose()
   createdBy!: string;
@@ -163,4 +165,12 @@ export class FrontProductInfos extends ApiResponse<FrontReadProduct> {
     description: 'Les données sont retournées à la création du produit',
   })
   declare result: FrontReadProduct;
+}
+
+export class ListFrontProductInfos extends ApiResponse<FrontReadProduct[]> {
+  @ApiProperty({
+    type: () => [FrontReadProduct],
+    description: 'On retourne une liste de produits de type FrontReadProduct',
+  })
+  declare result: FrontReadProduct[];
 }

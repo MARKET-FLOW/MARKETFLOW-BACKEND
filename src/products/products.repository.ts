@@ -29,16 +29,17 @@ export class ProductsRepository {
   }
   //fonction pour récuperer tout les produits
   async getAllProducts(
-    pagination: PaginationDto,
+    pagination?: PaginationDto,
     admin?: string,
   ): Promise<CRUDResult<PaginatedData<Product>>> {
     try {
-      const page = pagination.page ?? 1;
-      const limit = pagination.limit ?? 10;
+      const page = pagination?.page ?? 1;
+      const limit = pagination?.limit ?? 10;
       const skip = (page - 1) * limit;
-      const where = admin === ADMIN_SCOPE ? {include : {store : true}} : { deletedAt: null };
+      const where = admin === ADMIN_SCOPE ? {} : { isActive: true, deletedAt: null };
 
       const products = await this.prisma.product.findMany({
+        where,
         skip,
         take: limit,
       });
@@ -77,15 +78,11 @@ export class ProductsRepository {
       let product;
       if(admin === ADMIN_SCOPE){
           product = await this.prisma.product.findUnique({
-            where: {
-              id: id,
-              isActive: true,
-              
-            },
+            where: {id},
           });
       }
       else{
-        product = await this.prisma.product.findUnique({
+        product = await this.prisma.product.findFirst({
           where: {
             id: id,
             isActive: true,
@@ -111,10 +108,10 @@ export class ProductsRepository {
   }
 
 
-  async update(id: UUID, updateProduct: Prisma.ProductUpdateInput): Promise<CRUDResult<Product>>{
+  async updateProduct(id: UUID, updateProduct: Prisma.ProductUpdateInput): Promise<CRUDResult<Product>>{
       
     try{
-      const existProduct = await this.prisma.product.findUnique({
+      const existProduct = await this.prisma.product.findFirst({
         where: {
           id: id,
           isActive: true,
@@ -145,9 +142,7 @@ export class ProductsRepository {
   }
 
   async deleteProduct(id: UUID): Promise<CRUDResult<string>>  {
-    /*return this.prisma.product.delete({
-      where: { id },
-    });*/
+    
     try {
       //soft delete pour simuler la suppression
       await this.prisma.product.update({
