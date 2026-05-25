@@ -24,8 +24,23 @@ export class StoresRepository {
 
       return CRUDResult.crud_success(createdStore, 201);
     } catch (error) {
-      handleProjectErrors<Store>(error);
-      throw error;
+      return handleProjectErrors<Store>(error);
+    }
+  }
+
+  async findAllStores(): Promise<CRUDResult<Store[]>> {
+    try {
+      const stores = await this.prismaService.store.findMany({
+        where: {
+          deletedAt: null, // Filtre pour ignorer les magasins en Soft Delete
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+      return CRUDResult.crud_success(stores, 200);
+    } catch (error) {
+      return handleProjectErrors<Store[]>(error);
     }
   }
 }

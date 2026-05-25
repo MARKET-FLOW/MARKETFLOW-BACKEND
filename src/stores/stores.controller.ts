@@ -15,7 +15,10 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { STORE_TAG } from '../common/constants/api-tags.constant';
 import { ApiResponse as SwaggerApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
-import { FrontReadStore } from './dto/front-read-store.dto';
+import {
+  FrontListStoreInfo,
+  FrontStoreInfo,
+} from './dto/store.front-responses.dto';
 
 @ApiTags(STORE_TAG)
 @Controller('stores')
@@ -27,7 +30,7 @@ export class StoresController {
   @SwaggerApiResponse({
     status: 201,
     description: 'Store créer avec succes.',
-    type: FrontReadStore,
+    type: FrontStoreInfo,
   })
   async create(
     @Body() createStoreDto: CreateStoreDto,
@@ -39,8 +42,15 @@ export class StoresController {
   }
 
   @Get()
-  findAll() {
-    return this.storesService.findAll();
+  @ApiOperation({ summary: 'Récupérer tous les magasins' })
+  @SwaggerApiResponse({
+    status: 200,
+    description: 'Liste de tous les magasins récupérée avec succès.',
+    type: FrontListStoreInfo,
+  })
+  async findAll(@Res() _response: Response) {
+    const res = await this.storesService.serviceFindAllStores();
+    return res.to_HTTP_api_base_response(_response);
   }
 
   @Get(':id')
