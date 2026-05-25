@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-import { ErrorMessage } from '../types/error.message';
+import { ErrorMessage } from './error.message';
 import { GlobalAppResult } from './global-app.result';
+import { ServiceResult } from './service.result';
+import { ServiceName } from '../constants/services-names.constants';
 
 export class CRUDResult<T> extends GlobalAppResult<T> {
   public readonly statusCode: number;
@@ -31,7 +33,7 @@ export class CRUDResult<T> extends GlobalAppResult<T> {
 
   /**
    * Helper pour créer une réponse d'erreur.
-   * NOTE: On retire <ErrorMessage> ici car on utilise la VRAIE classe ErrorMessage importée
+   * NOTE : On retire <ErrorMessage> ici car on utilise la VRAIE classe ErrorMessage importée
    */
   static crud_error<T>(
     argsOrError:
@@ -54,6 +56,25 @@ export class CRUDResult<T> extends GlobalAppResult<T> {
       null,
       argsOrError as ErrorMessage,
       statusCode ?? 500,
+    );
+  }
+
+  /**
+   * Helper pour retourner obtenir rapidement une ServiceResult d'erreur à partir d'un CRUDResult d'erreur.
+   * @param serviceName Le nom du service pour lequel on veut créer le ServiceResult d'erreur
+   * @returns Un ServiceResult d'erreur avec les mêmes informations d'erreur et de statusCode que ce CRUDResult
+   */
+  toServiceError<T>(serviceName: ServiceName): ServiceResult<T> {
+    if (this.isSuccess) {
+      throw new Error(
+        'Impossible de convertir un CrudResult de success en ServiceError',
+      );
+    }
+
+    return ServiceResult.error_service(
+      this.error,
+      this.statusCode,
+      serviceName,
     );
   }
 

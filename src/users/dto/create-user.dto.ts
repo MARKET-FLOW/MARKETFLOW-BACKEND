@@ -11,25 +11,7 @@ import {
 import { UUID } from 'node:crypto';
 import { Role } from '@prisma/client';
 import { ApiResponse } from 'src/common/types/api.response';
-
-// Validation de l'objet store
-export class FrontReadStore {
-  @ApiProperty({ description: 'ID unique du store' })
-  @Expose()
-  id!: UUID;
-
-  @ApiProperty({ description: 'Nom du store' })
-  @Expose()
-  name!: string;
-
-  @ApiProperty({ description: 'Adresse du store', nullable: true })
-  @Expose()
-  address!: string;
-
-  @ApiProperty({ description: 'Téléphone du store', nullable: true })
-  @Expose()
-  phone!: string;
-}
+import { FrontReadStore } from '../../stores/dto/front-read-store.dto';
 
 // validation des données front
 export class CreateUserDto {

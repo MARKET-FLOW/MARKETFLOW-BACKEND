@@ -4,6 +4,7 @@ import { GlobalAppResult } from './global-app.result';
 import { UNKNOWN_SERVICE } from '../constants/result.constant';
 import { ApiResponse } from './api.response';
 import { ErrorMessage } from './error.message';
+import { ServiceName } from '../constants/services-names.constants';
 
 export class ServiceResult<T> extends GlobalAppResult<T> {
   public readonly serviceName: string;
@@ -34,7 +35,7 @@ export class ServiceResult<T> extends GlobalAppResult<T> {
   static success_service<T>(
     data: T,
     statusCode: number = 200,
-    serviceName: string = UNKNOWN_SERVICE,
+    serviceName: ServiceName = 'UNKNOWN_SERVICE',
   ): ServiceResult<T> {
     return new ServiceResult<T>(data, null, statusCode, serviceName);
   }
