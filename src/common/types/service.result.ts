@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Response } from 'express';
 import { GlobalAppResult } from './global-app.result';
 import { UNKNOWN_SERVICE } from '../constants/result.constant';
@@ -21,7 +22,11 @@ export class ServiceResult<T> extends GlobalAppResult<T> {
 
   to_HTTP_api_base_response(res: Response): ApiResponse<T> {
     if (this.isError) {
-      return ApiResponse.error_response(this.error, res, this.statusCode);
+      return ApiResponse.error_response(
+        this.error,
+        res,
+        this.statusCode,
+      );
     }
     return ApiResponse.success_response(this.data, res, this.statusCode);
   }

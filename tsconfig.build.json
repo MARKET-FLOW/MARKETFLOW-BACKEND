@@ -13,7 +13,6 @@
   "compilerOptions": {
     "rootDir": "./src",
     "paths": {
-      "@prisma/client": ["prisma/generated/prisma"]
     }
   }
 }

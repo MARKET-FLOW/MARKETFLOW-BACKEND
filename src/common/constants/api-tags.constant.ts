@@ -1,3 +1,3 @@
-export const USER_TAG = 'Users';
-export const PRODUCT_TAG = 'Products';
-export const CASHIER = 'CASHIER';
+export const USER_TAG = 'Users api endpoints';
+export const PRODUCT_TAG = 'Products api endpoints';
+export const CASHIER = 'Cashiers api endpoints';

@@ -27,6 +27,11 @@ build/
 .idea/
 .DS_Store
 *.log
+.qodo
 
 # DOCKER
 docker/data/
+
+# PNPM store (cache local)
+.pnpm-store/
+pnpm-store/
