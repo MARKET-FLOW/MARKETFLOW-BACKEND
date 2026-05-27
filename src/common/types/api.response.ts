@@ -7,11 +7,15 @@ export class ApiResponse<T> {
   readonly success: boolean;
 
   @ApiPropertyOptional({
-    type: () => ErrorMessage,
+    description: "Le message d'erreur, présent uniquement si success est false",
+    type: ErrorMessage,
   })
   readonly error: ErrorMessage | null;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description:
+      'Le résultat de la requête, présent uniquement si success est true',
+  })
   readonly result: T | null;
 
   constructor(

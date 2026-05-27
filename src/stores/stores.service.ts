@@ -8,6 +8,7 @@ import { FrontReadStore } from './dto/front-read-store.dto';
 import { SERVICE_NAMES_MAPPING } from '../common/constants/services-names.constants';
 import { StoreMapper } from './mappers/store.mapper';
 import { CRUDResult } from '../common/types/crud.result';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class StoresService {
@@ -78,15 +79,73 @@ export class StoresService {
     );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} stores`;
+  /**
+   * Service pour récupérer un magasin par son ID. Il appelle la méthode findStoreById du repository, gère les erreurs
+   * potentielles et formate la réponse avec le mapper approprié.
+   * @param id L'ID du magasin à récupérer, de type UUID.
+   * @returns Un ServiceResult contenant les données du magasin formatées pour le front-end, ou
+   * une erreur si la récupération a échoué ou si le magasin n'a pas été trouvé.
+   */
+  async serviceFindStoreById(id: UUID): Promise<ServiceResult<FrontReadStore>> {
+    const searchResult = await this.storeRepo.findStoreById(id);
+
+    if (searchResult.isError) {
+      return this.repoErrorToServiceError(searchResult);
+    }
+
+    const formattedStore = StoreMapper.toFrontReadStore(searchResult.data);
+
+    return ServiceResult.success_service(
+      formattedStore,
+      200,
+      SERVICE_NAMES_MAPPING.STORE_SERVICE,
+    );
   }
 
-  update(id: number, updateStoreDto: UpdateStoreDto) {
-    return `This action updates a #${id} stores`;
+  /**
+   * Service pour mettre à jour un magasin. Il appelle la méthode updateStore du repository, gère les erreurs
+   * potentielles et formate la réponse avec le mapper approprié.
+   * @param id L'ID du magasin à mettre à jour, de type UUID.
+   * @param updateStoreDto Les données de mise à jour du magasin, encapsulées dans un DTO.
+   * @returns Un ServiceResult contenant les données du magasin mis à jour formatées pour le front-end, ou
+   * une erreur si la mise à jour a échoué.
+   */
+  async serviceUpdateStore(
+    id: UUID,
+    updateStoreDto: UpdateStoreDto,
+  ): Promise<ServiceResult<FrontReadStore>> {
+    const updateResult = await this.storeRepo.updateStore(id, updateStoreDto);
+
+    if (updateResult.isError) {
+      return this.repoErrorToServiceError(updateResult);
+    }
+
+    const formattedStore = StoreMapper.toFrontReadStore(updateResult.data);
+
+    return ServiceResult.success_service(
+      formattedStore,
+      200,
+      SERVICE_NAMES_MAPPING.STORE_SERVICE,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} stores`;
+  /**
+   * Service pour supprimer un magasin. Il appelle la méthode deleteStore du repository, gère les erreurs
+   * potentielles et formate la réponse avec le mapper approprié.
+   * @param id L'ID du magasin à supprimer, de type UUID.
+   * @returns Un ServiceResult contenant un message de succès ou une erreur si la suppression a échoué.
+   */
+  async serviceDeleteStore(id: UUID): Promise<ServiceResult<void>> {
+    const deleteResult = await this.storeRepo.deleteStore(id);
+
+    if (deleteResult.isError) {
+      return this.repoErrorToServiceError(deleteResult);
+    }
+
+    return ServiceResult.success_service(
+      undefined,
+      200,
+      SERVICE_NAMES_MAPPING.STORE_SERVICE,
+    );
   }
 }

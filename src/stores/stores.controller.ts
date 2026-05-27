@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Res,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { CreateStoreDto } from './dto/create-stores.dto';
@@ -18,12 +19,14 @@ import { ApiResponse as SwaggerApiResponse } from '@nestjs/swagger/dist/decorato
 import {
   FrontListStoreInfo,
   FrontStoreInfo,
+  FrontStoreNotFoundResponse,
 } from './dto/store.front-responses.dto';
-import { ApiValidationError } from '../common/decorators/api-validation-error.decorator';
+import { ApiCommonDocs } from '../common/decorators/api.global.decorator';
+import { UUID } from 'node:crypto';
 
 @ApiTags(STORE_TAG)
 @Controller('stores')
-@ApiValidationError()
+@ApiCommonDocs()
 export class StoresController {
   constructor(private readonly storesService: StoresService) {}
 
@@ -56,17 +59,63 @@ export class StoresController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.storesService.findOne(+id);
+  @ApiOperation({ summary: 'Récupérer un magasin par son ID' })
+  @SwaggerApiResponse({
+    status: 200,
+    description: 'Magasin récupéré avec succès.',
+    type: FrontStoreInfo,
+  })
+  @SwaggerApiResponse({
+    status: 404,
+    description: 'Store introuvable',
+    type: FrontStoreNotFoundResponse,
+  })
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: UUID,
+    @Res() _response: Response,
+  ) {
+    const res = await this.storesService.serviceFindStoreById(id);
+    return res.to_HTTP_api_base_response(_response);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
-    return this.storesService.update(+id, updateStoreDto);
+  @ApiOperation({ summary: 'Mettre à jour un magasin par son ID' })
+  @SwaggerApiResponse({
+    status: 200,
+    description: 'Magasin mis à jour avec succès.',
+    type: FrontStoreInfo,
+  })
+  @SwaggerApiResponse({
+    status: 404,
+    description: 'Store introuvable',
+    type: FrontStoreNotFoundResponse,
+  })
+  async update(
+    @Param('id', ParseUUIDPipe) id: UUID,
+    @Body() updateStoreDto: UpdateStoreDto,
+    @Res() _response: Response,
+  ) {
+    const res = await this.storesService.serviceUpdateStore(id, updateStoreDto);
+    return res.to_HTTP_api_base_response(_response);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.storesService.remove(+id);
+  @ApiOperation({ summary: 'Supprimer un magasin par son ID' })
+  @SwaggerApiResponse({
+    status: 200,
+    description: 'Magasin supprimé avec succès.',
+    type: FrontStoreInfo,
+  })
+  @SwaggerApiResponse({
+    status: 404,
+    description: 'Store introuvable',
+    type: FrontStoreNotFoundResponse,
+  })
+  async remove(
+    @Param('id', ParseUUIDPipe) id: UUID,
+    @Res() _response: Response,
+  ) {
+    const res = await this.storesService.serviceDeleteStore(id);
+    return res.to_HTTP_api_base_response(_response);
   }
 }

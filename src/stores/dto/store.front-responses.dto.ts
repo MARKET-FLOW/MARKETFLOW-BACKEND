@@ -1,17 +1,19 @@
 import { ApiResponse } from '../../common/types/api.response';
 import { FrontReadStore } from './front-read-store.dto';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class FrontStoreInfo extends ApiResponse<FrontReadStore> {
-  @ApiPropertyOptional({
-    type: () => FrontReadStore,
+  @ApiProperty({
+    type: FrontReadStore,
   })
   declare result: FrontReadStore;
 }
 
+export class FrontStoreNotFoundResponse extends ApiResponse<null> {}
+
 export class FrontListStoreInfo extends ApiResponse<FrontReadStore[]> {
-  @ApiPropertyOptional({
-    type: () => [FrontReadStore],
+  @ApiProperty({
+    type: [FrontReadStore],
   })
   declare result: FrontReadStore[];
 }
