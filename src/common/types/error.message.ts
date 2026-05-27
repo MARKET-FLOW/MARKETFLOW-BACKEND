@@ -6,10 +6,16 @@ export class ErrorMessage {
   @ApiProperty({
     description: "Le type d'erreur qu'on retourne",
     example: ErrorType.INTERNAL_SERVER_ERROR,
+    enum: ErrorType,
+    enumName: 'ErrorType',
+    type: () => ErrorType,
   })
   @IsEnum(ErrorType)
   private readonly type: ErrorType;
-  @ApiProperty()
+
+  @ApiProperty({
+    description: "L'erreur en question, affichable directement à l'user",
+  })
   private readonly message: string;
 
   constructor(type: ErrorType, message: string) {

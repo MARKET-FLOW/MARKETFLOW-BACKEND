@@ -19,9 +19,11 @@ import {
   FrontListStoreInfo,
   FrontStoreInfo,
 } from './dto/store.front-responses.dto';
+import { ApiValidationError } from '../common/decorators/api-validation-error.decorator';
 
 @ApiTags(STORE_TAG)
 @Controller('stores')
+@ApiValidationError()
 export class StoresController {
   constructor(private readonly storesService: StoresService) {}
 

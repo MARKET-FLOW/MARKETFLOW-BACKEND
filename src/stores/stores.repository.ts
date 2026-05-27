@@ -32,7 +32,7 @@ export class StoresRepository {
     try {
       const stores = await this.prismaService.store.findMany({
         where: {
-          deletedAt: null, // Filtre pour ignorer les magasins en Soft Delete
+          deletedAt: null,
         },
         orderBy: {
           createdAt: 'desc',

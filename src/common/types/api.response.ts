@@ -1,14 +1,14 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 import { Response } from 'express';
 import { ErrorMessage } from './error.message';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ApiResponse<T> {
   @ApiProperty()
   readonly success: boolean;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    type: () => ErrorMessage,
+  })
   readonly error: ErrorMessage | null;
 
   @ApiProperty()
@@ -34,9 +34,9 @@ export class ApiResponse<T> {
     statusCode: number = 200,
   ): ApiResponse<T> {
     const responseBody = new ApiResponse(true, data, null);
-    
+
     res.status(statusCode).json(responseBody);
-    
+
     return responseBody;
   }
 
@@ -45,10 +45,11 @@ export class ApiResponse<T> {
     res: Response,
     statusCode: number,
   ): ApiResponse<T> {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const responseBody = new ApiResponse(false, null as T, error_message);
-    
+
     res.status(statusCode).json(responseBody);
-    
+
     return responseBody;
   }
 }

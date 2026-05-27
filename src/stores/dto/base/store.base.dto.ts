@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 import {
   IsDate,
   IsMobilePhone,
@@ -16,6 +17,7 @@ export class StoreBaseDto {
   })
   @IsOptional()
   @IsString()
+  @Expose()
   address?: string;
 
   @ApiProperty({
@@ -24,6 +26,7 @@ export class StoreBaseDto {
   })
   @IsNotEmpty({ message: 'Le nom du store est requis' })
   @IsString()
+  @Expose()
   name!: string;
 
   @ApiPropertyOptional({
@@ -36,6 +39,7 @@ export class StoreBaseDto {
     { strictMode: true },
     { message: 'Le numéro de téléphone doit etre valide' },
   )
+  @Expose()
   phone?: string;
 
   @ApiPropertyOptional({
@@ -45,15 +49,18 @@ export class StoreBaseDto {
   })
   @IsOptional()
   @IsObject()
+  @Expose()
   settings?: Record<string, any>;
 
   @ApiPropertyOptional({ description: 'La date de création du store' })
   @IsOptional()
   @IsDate()
+  @Expose()
   createdAt?: Date;
 
   @ApiProperty({ description: "L'id du store" })
   @IsNotEmpty()
   @IsUUID()
+  @Expose()
   id!: UUID;
 }
