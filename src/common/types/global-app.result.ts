@@ -10,13 +10,13 @@ export abstract class GlobalAppResult<T> {
         'Une réponse ne peut pas contenir à la fois des données et une erreur.',
       );
     }
-    //  J'ai commenté ici parceque on peut choisir de permettre une réponse vide (ni données ni erreur) si cela a du sens dans le contexte de la requête
+    //  J'ai décommenté 🤣
 
-    // if (data === null && error === null) {
-    //   throw new Error(
-    //     'Une réponse doit contenir soit des données, soit une erreur.',
-    //   );
-    // }
+    if (data === null && error === null) {
+      throw new Error(
+        'Une réponse doit contenir soit des données, soit une erreur.',
+      );
+    }
 
     this._data = data;
     this._error = error;

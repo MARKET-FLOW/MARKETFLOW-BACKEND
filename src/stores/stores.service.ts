@@ -135,15 +135,17 @@ export class StoresService {
    * @param id L'ID du magasin à supprimer, de type UUID.
    * @returns Un ServiceResult contenant un message de succès ou une erreur si la suppression a échoué.
    */
-  async serviceDeleteStore(id: UUID): Promise<ServiceResult<void>> {
+  async serviceDeleteStore(id: UUID): Promise<ServiceResult<FrontReadStore>> {
     const deleteResult = await this.storeRepo.deleteStore(id);
 
     if (deleteResult.isError) {
       return this.repoErrorToServiceError(deleteResult);
     }
 
+    const formattedStore = StoreMapper.toFrontReadStore(deleteResult.data);
+
     return ServiceResult.success_service(
-      undefined,
+      formattedStore,
       200,
       SERVICE_NAMES_MAPPING.STORE_SERVICE,
     );

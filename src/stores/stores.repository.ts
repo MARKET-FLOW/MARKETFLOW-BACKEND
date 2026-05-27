@@ -98,7 +98,7 @@ export class StoresRepository {
     }
   }
 
-  async deleteStore(storeId: UUID): Promise<CRUDResult<null>> {
+  async deleteStore(storeId: UUID): Promise<CRUDResult<Store>> {
     try {
       const storeExists = await this.findStoreById(storeId);
 
@@ -115,9 +115,9 @@ export class StoresRepository {
         },
       });
 
-      return CRUDResult.crud_success(null, 200);
+      return CRUDResult.crud_success(storeExists.data, 200);
     } catch (error) {
-      return handleProjectErrors<null>(error);
+      return handleProjectErrors<Store>(error);
     }
   }
 }
