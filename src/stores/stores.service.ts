@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-stores.dto';
 import { UpdateStoreDto } from './dto/update-stores.dto';
-import { RedisCacheService } from '../common/cache/redis-cache.service';
 import { StoresRepository } from './stores.repository';
 import { ServiceResult } from '../common/types/service.result';
 import { FrontReadStore } from './dto/front-read-store.dto';
@@ -9,12 +8,13 @@ import { SERVICE_NAMES_MAPPING } from '../common/constants/services-names.consta
 import { StoreMapper } from './mappers/store.mapper';
 import { CRUDResult } from '../common/types/crud.result';
 import { UUID } from 'crypto';
+import StoresCache from './stores.cache';
 
 @Injectable()
 export class StoresService {
   constructor(
     private readonly storeRepo: StoresRepository,
-    private readonly redis: RedisCacheService,
+    private readonly redis: StoresCache,
   ) {}
 
   /**
@@ -48,6 +48,8 @@ export class StoresService {
 
     const formattedData = StoreMapper.toFrontReadStore(createResult.data);
 
+    await this.redis.setStoreToCache(formattedData);
+
     return ServiceResult.success_service(
       formattedData,
       201,
@@ -62,6 +64,16 @@ export class StoresService {
    * une erreur si la récupération a échoué.
    */
   async serviceFindAllStores(): Promise<ServiceResult<FrontReadStore[]>> {
+    const cachedStores = await this.redis.getStoreListFromCache();
+
+    if (cachedStores !== null) {
+      return ServiceResult.success_service(
+        cachedStores,
+        200,
+        SERVICE_NAMES_MAPPING.STORE_SERVICE,
+      );
+    }
+
     const storesResult = await this.storeRepo.findAllStores();
 
     if (storesResult.isError) {
@@ -71,6 +83,8 @@ export class StoresService {
     const formattedData = storesResult.data.map((store) =>
       StoreMapper.toFrontReadStore(store),
     );
+
+    await this.redis.setStoreListToCache(formattedData);
 
     return ServiceResult.success_service(
       formattedData,
@@ -87,6 +101,15 @@ export class StoresService {
    * une erreur si la récupération a échoué ou si le magasin n'a pas été trouvé.
    */
   async serviceFindStoreById(id: UUID): Promise<ServiceResult<FrontReadStore>> {
+    const cachedStore = await this.redis.getStoreFromCache(id);
+
+    if (cachedStore !== null) {
+      return ServiceResult.success_service(
+        cachedStore,
+        200,
+        SERVICE_NAMES_MAPPING.STORE_SERVICE,
+      );
+    }
     const searchResult = await this.storeRepo.findStoreById(id);
 
     if (searchResult.isError) {
@@ -94,6 +117,8 @@ export class StoresService {
     }
 
     const formattedStore = StoreMapper.toFrontReadStore(searchResult.data);
+
+    await this.redis.setStoreToCache(formattedStore);
 
     return ServiceResult.success_service(
       formattedStore,
@@ -122,6 +147,8 @@ export class StoresService {
 
     const formattedStore = StoreMapper.toFrontReadStore(updateResult.data);
 
+    await this.redis.setStoreToCache(formattedStore);
+
     return ServiceResult.success_service(
       formattedStore,
       200,
@@ -143,6 +170,8 @@ export class StoresService {
     }
 
     const formattedStore = StoreMapper.toFrontReadStore(deleteResult.data);
+
+    await this.redis.deleteStoreFromCache(id);
 
     return ServiceResult.success_service(
       formattedStore,
