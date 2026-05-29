@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -34,7 +33,7 @@ async function bootstrap() {
 
   // redoc configuration
   app.use(
-    'redocs',
+    '/redocs',
     redoc({
       title: 'MARKET-FLOW API Documentation',
       specUrl: '/docs-json',

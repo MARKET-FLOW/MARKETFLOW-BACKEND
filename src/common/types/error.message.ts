@@ -3,14 +3,19 @@ import { ErrorType } from './error-type.enum';
 import { IsEnum } from 'class-validator';
 
 export class ErrorMessage {
-
   @ApiProperty({
-    description: 'Le typd\'erreur qu\'on retourne',
-    example: ErrorType.INTERNAL_SERVER_ERROR
+    description: "Le type d'erreur qu'on retourne",
+    example: ErrorType.INTERNAL_SERVER_ERROR,
+    enum: ErrorType,
+    enumName: 'ErrorType',
+    type: () => ErrorType,
   })
   @IsEnum(ErrorType)
   private readonly type: ErrorType;
-  @ApiProperty()
+
+  @ApiProperty({
+    description: "L'erreur en question, affichable directement à l'user",
+  })
   private readonly message: string;
 
   constructor(type: ErrorType, message: string) {

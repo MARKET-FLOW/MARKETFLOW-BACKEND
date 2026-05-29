@@ -1,17 +1,17 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { UUID } from 'node:crypto';
-import { CacheKeyFactory } from 'src/common/cache/cache-key.factory';
-import { CacheDuration } from 'src/common/cache/cache.duration.enum';
-import { CacheDomain } from 'src/common/cache/enum.cache.domain';
-import { RedisCacheService } from 'src/common/cache/redis-cache.service';
-import { ADMIN_SCOPE } from 'src/common/constants/global.constants';
-import { ErrorType } from 'src/common/types/error-type.enum';
-import { ErrorMessage } from 'src/common/types/error.message';
-import { ServiceResult } from 'src/common/types/service.result';
 import { CreateUserDto, FrontReadUser } from './dto/create-user.dto';
 import { UserMapper } from './mappers/user.mapper';
 import { UsersRepository } from './users.repository';
+import { CacheDuration } from '../common/cache/cache.duration.enum';
+import { CacheDomain } from '../common/cache/enum.cache.domain';
+import { RedisCacheService } from '../common/cache/redis-cache.service';
+import { ADMIN_SCOPE } from '../common/constants/global.constants';
+import { ErrorType } from '../common/types/error-type.enum';
+import { ErrorMessage } from '../common/types/error.message';
+import { ServiceResult } from '../common/types/service.result';
+import { CacheKeyFactory } from '../common/cache/cache-key.factory';
 
 // Définition de quelques constantes du fichier
 const USERS_LIST_CACHE_ID: string = 'users:list';
@@ -52,7 +52,7 @@ export class UsersService {
       await this.redis.set(
         cache_key,
         userToFront,
-        CacheDuration.USER_DURATION.valueOf(),
+        CacheDuration.ONE_HOUR,
       ); // Cache pour 1 heure.
 
       // Invalider les listes de cache (admin et défaut)
@@ -115,7 +115,7 @@ export class UsersService {
       await this.redis.set(
         list_cache_key,
         frontUsers,
-        CacheDuration.LISTE_USERS_DURATION.valueOf(),
+        CacheDuration.ONE_HOUR,
       );
 
       return ServiceResult.success_service(frontUsers, users.statusCode);
@@ -170,7 +170,7 @@ export class UsersService {
       await this.redis.set(
         cache_key,
         frontUser,
-        CacheDuration.USER_DURATION.valueOf()
+        CacheDuration.ONE_HOUR
       ) 
       
       return ServiceResult.success_service(

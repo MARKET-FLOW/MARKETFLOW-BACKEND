@@ -1,8 +1,7 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 
-/* eslint-disable prettier/prettier */
 export enum UserMessages {
-  USER_NOT_FOUND = "Utilisateur non trouvé",
+  USER_NOT_FOUND = 'Utilisateur non trouvé',
 }
 
-export type UserWithStore = Prisma.UserGetPayload<{include: { store: true };}>;
+export type UserWithStore = Prisma.UserGetPayload<{ include: { store: true } }>;

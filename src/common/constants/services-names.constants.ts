@@ -1,0 +1,12 @@
+export const SERVICE_NAMES_MAPPING = {
+  USER_SERVICE: 'USER_SERVICE',
+  PRODUCT_SERVICE: 'PRODUCT_SERVICE',
+  CASHIER_SERVICE: 'CASHIER_SERVICE',
+  STORE_SERVICE: 'STORE_SERVICE',
+  UNKNOWN_SERVICE: 'UNKNOWN_SERVICE',
+} as const;
+/**
+ * TYpe utilitaire pour les names des services dans ServiceResult
+ */
+export type ServiceName =
+  (typeof SERVICE_NAMES_MAPPING)[keyof typeof SERVICE_NAMES_MAPPING];

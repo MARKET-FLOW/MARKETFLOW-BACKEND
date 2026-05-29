@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateStoreDto } from './create-stores.dto';
+import { PartialType, OmitType } from '@nestjs/swagger';
+import { StoreBaseDto } from './base/store.base.dto';
 
-export class UpdateStoreDto extends PartialType(CreateStoreDto) {}
+export class UpdateStoreDto extends OmitType(PartialType(StoreBaseDto), [
+  'id',
+  'createdAt',
+]) {}
