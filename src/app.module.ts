@@ -17,6 +17,7 @@ import { SyncQueuesModule } from './sync-queues/sync-queues.module';
 import { CacheModule, CacheModuleOptions } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { ConfigModule } from '@nestjs/config';
     StockMovementsModule,
     StoresModule,
     SyncQueuesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

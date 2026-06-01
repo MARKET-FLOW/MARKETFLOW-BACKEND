@@ -11,6 +11,13 @@ model User {
   lastLoginAt  DateTime? @map("last_login_at")
   deletedAt    DateTime? @map("deleted_at")
 
+  //Champs pour nestbolt
+  emailVerifiedAt        DateTime? @map("email_verified_at")
+  twoFactorSecret        String?   @map("two_factor_secret") @db.Text
+  twoFactorRecoveryCodes String?   @map("two_factor_recovery_codes") @db.Text
+  twoFactorConfirmedAt   DateTime? @map("two_factor_confirmed_at")
+  passwordConfirmedAt    DateTime? @map("password_confirmed_at")
+
   // Relations
   store          Store           @relation(fields: [storeId], references: [id])
   products       Product[]
