@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SyncQueuesService } from './sync-queues.service';
 import { CreateSyncQueueDto } from './dto/create-sync-queues.dto';
 import { UpdateSyncQueueDto } from './dto/update-sync-queues.dto';
@@ -23,7 +31,10 @@ export class SyncQueuesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSyncQueueDto: UpdateSyncQueueDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSyncQueueDto: UpdateSyncQueueDto,
+  ) {
     return this.syncQueuesService.update(+id, updateSyncQueueDto);
   }
 

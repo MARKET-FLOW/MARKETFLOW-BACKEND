@@ -10,6 +10,7 @@ model CashSession {
   openedAt        DateTime  @default(now()) @map("opened_at")
   closedAt        DateTime? @map("closed_at")
   deletedAt       DateTime? @map("deleted_at")
+  updatedAt       DateTime? @map("updated_at")
 
   // Relations
   store   Store  @relation(fields: [storeId], references: [id])
@@ -18,7 +19,6 @@ model CashSession {
 
   @@index([storeId, status], name: "idx_cash_store_status")
   @@index([cashierId], name: "idx_cash_cashier")
-  @@index([openedAt], name: "idx_cash_opened_at")
-  @@index([deletedAt], name: "idx_cash_deleted_at")
+  @@index([storeId, openedAt], name: "idx_cash_store_date")
   @@map("cash_sessions")
 }

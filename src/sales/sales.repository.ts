@@ -30,7 +30,7 @@ export class SalesRepository {
           mobileDeviceId: dto.mobileDeviceId ?? null,
         },
       });
-      // Retourne un résultat de succès standard avec un code HTTP 201 
+      // Retourne un résultat de succès standard avec un code HTTP 201
       return CRUDResult.crud_success(sale, 201);
     } catch (error) {
       // Capture et centralise la gestion des erreurs Prisma
@@ -67,7 +67,9 @@ export class SalesRepository {
       });
       // Si la vente n'existe pas ou a été supprimée, on lève une exception 404
       if (!sale) {
-        throw new NotFoundException(`La vente spécifiée avec l'ID "${id}" est introuvable`);
+        throw new NotFoundException(
+          `La vente spécifiée avec l'ID "${id}" est introuvable`,
+        );
       }
       return CRUDResult.crud_success(sale, 200);
     } catch (error) {
@@ -102,7 +104,7 @@ export class SalesRepository {
     }
   }
 
-  // Supprimer logiquement une vente 
+  // Supprimer logiquement une vente
   async deleteSale(id: string): Promise<CRUDResult<Sale>> {
     try {
       const sale = await this.prisma.sale.update({
@@ -117,5 +119,3 @@ export class SalesRepository {
     }
   }
 }
-
-

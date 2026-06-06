@@ -10,7 +10,6 @@ model StockMovement {
   quantityAfter  Int       @map("quantity_after")
   reason         String?   @db.VarChar(200)
   createdAt      DateTime  @default(now()) @map("created_at")
-  deletedAt      DateTime? @map("deleted_at")
 
   // Relations
   store   Store   @relation(fields: [storeId], references: [id])
@@ -20,6 +19,5 @@ model StockMovement {
   @@index([storeId, productId], name: "idx_stock_store_product")
   @@index([storeId, createdAt], name: "idx_stock_store_date")
   @@index([referenceId], name: "idx_stock_reference")
-  @@index([deletedAt], name: "idx_stock_deleted_at")
   @@map("stock_movements")
 }

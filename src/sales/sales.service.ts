@@ -25,7 +25,10 @@ export class SalesService {
   }
 
   // Appelle le repository pour mettre à jour une vente
-  async update(id: string, updateSaleDto: UpdateSaleDto): Promise<CRUDResult<Sale>> {
+  async update(
+    id: string,
+    updateSaleDto: UpdateSaleDto,
+  ): Promise<CRUDResult<Sale>> {
     return this.salesRepository.updateSale(id, updateSaleDto);
   }
 
@@ -34,4 +37,3 @@ export class SalesService {
     return this.salesRepository.deleteSale(id);
   }
 }
-

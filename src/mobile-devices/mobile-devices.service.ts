@@ -4,7 +4,6 @@ import { UpdateMobileDeviceDto } from './dto/update-mobile-devices.dto';
 
 @Injectable()
 export class MobileDevicesService {
-
   create(createMobileDeviceDto: CreateMobileDeviceDto) {
     return 'This action adds a new mobile-devices';
   }

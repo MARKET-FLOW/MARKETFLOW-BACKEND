@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { plainToInstance } from 'class-transformer';
 import { FrontReadUser } from '../dto/create-user.dto';
 import { User } from '@prisma/client';

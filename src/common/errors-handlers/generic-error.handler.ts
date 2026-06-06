@@ -1,13 +1,10 @@
-/* eslint-disable prettier/prettier */
 import { Prisma } from '@prisma/client';
 import { CRUDResult } from '../types/crud.result';
 import { ErrorType } from '../types/error-type.enum';
 import { ErrorMessage } from '../types/error.message';
 import { handlePrismaError } from './prisma-error.handler';
 
-export function handleGenericError<T>(
-  error: unknown,
-): CRUDResult<T> {
+export function handleGenericError<T>(error: unknown): CRUDResult<T> {
   // logging de l'erreur pour le debug
   console.error('An unexpected error occurred:', error);
 
@@ -20,7 +17,6 @@ export function handleGenericError<T>(
     statusCode: 500,
   });
 }
-
 
 export function handleProjectErrors<T>(error: unknown): CRUDResult<T> {
   if (
