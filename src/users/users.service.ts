@@ -4,10 +4,11 @@ import { UUID } from 'node:crypto';
 import { ErrorType } from '../common/types/error-type.enum';
 import { ErrorMessage } from '../common/types/error.message';
 import { ServiceResult } from '../common/types/service.result';
-import { CreateUserDto, FrontReadUser } from './dto/create-user.dto';
+import { CreateUserDto, } from './dto/create-user.dto';
 import { UsersCache } from './global-user/users.cache';
 import { UserMapper } from './mappers/user.mapper';
 import { UsersRepository } from './users.repository';
+import { FrontReadUser } from './dto/read.user.';
 
 @Injectable()
 export class UsersService {

@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { UserAuthDto } from './dto/create-auth.dto';
+import { ServiceResult } from 'src/common/types/service.result';
+import { AuthRepository } from './auth.repository';
+import { ErrorMessage } from 'src/common/types/error.message';
+import { verifyPassword } from 'src/common/utils/password.hash';
+import { ErrorType } from 'src/common/types/error-type.enum';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(private readonly authRepo: AuthRepository){}
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async serviceLogin(authData: UserAuthDto): Promise<ServiceResult<string>>{
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    const authRepoResponse = await this.authRepo.findUserByFields('username', authData.username)
+    if (authRepoResponse.isError){
+      return ServiceResult.error_service(
+        authRepoResponse.error,
+        authRepoResponse.statusCode
+      )
+    }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    if (!await verifyPassword(authRepoResponse.data.passwordHash, authData.password)){
+      return ServiceResult.error_service(
+        new ErrorMessage(
+          ErrorType.NOT_FOUND,
+          `Utilisateur avec username ${authData.username} non trouvé`
+        )
+      )
+    }    
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    // on génère les tokens ici et on retourn un message de succès
+
+    return ServiceResult.success_service(
+      `Utilisateur ${authData.username} connecté avec succès !`
+    )
   }
 }
