@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sales.dto';
 import { UpdateSaleDto } from './dto/update-sales.dto';
@@ -15,16 +25,20 @@ export class SalesController {
   @Post()
   @ApiOperation({ summary: 'Enregistrer une nouvelle vente' })
   @ApiResponse({ status: 201, description: 'La vente a été enregistrée' })
-  async create(@Body() createSaleDto: CreateSaleDto): Promise<CRUDResult<Sale>> {
+  async create(
+    @Body() createSaleDto: CreateSaleDto,
+  ): Promise<CRUDResult<Sale>> {
     return this.salesService.create(createSaleDto);
   }
 
-  // GET /sales : Récupérer toutes les ventes actives 
+  // GET /sales : Récupérer toutes les ventes actives
   @Get()
   @ApiOperation({ summary: 'Récupérer toutes les ventes' })
   @ApiQuery({ name: 'storeId', required: false })
   @ApiResponse({ status: 200, description: 'Liste des ventes' })
-  async findAll(@Query('storeId') storeId?: string): Promise<CRUDResult<Sale[]>> {
+  async findAll(
+    @Query('storeId') storeId?: string,
+  ): Promise<CRUDResult<Sale[]>> {
     return this.salesService.findAll(storeId);
   }
 
@@ -32,7 +46,9 @@ export class SalesController {
   @Get(':id')
   @ApiOperation({ summary: 'Récupérer une vente par ID' })
   @ApiResponse({ status: 200, description: 'Détails de la vente' })
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<CRUDResult<Sale>> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<CRUDResult<Sale>> {
     return this.salesService.findOne(id);
   }
 
@@ -51,8 +67,9 @@ export class SalesController {
   @Delete(':id')
   @ApiOperation({ summary: 'Supprimer une vente' })
   @ApiResponse({ status: 200, description: 'Vente supprimée' })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<CRUDResult<Sale>> {
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<CRUDResult<Sale>> {
     return this.salesService.remove(id);
   }
 }
-

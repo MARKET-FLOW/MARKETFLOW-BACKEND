@@ -4,7 +4,6 @@ import { UpdateAuditLogDto } from './dto/update-audit-logs.dto';
 
 @Injectable()
 export class AuditLogsService {
-
   create(createAuditLogDto: CreateAuditLogDto) {
     return 'This action adds a new audit-logs';
   }

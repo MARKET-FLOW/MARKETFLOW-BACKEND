@@ -1,6 +1,6 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { UUID } from 'node:crypto';
+import { SERVICE_NAMES_MAPPING } from '../common/constants/services-names.constants';
 import { ErrorType } from '../common/types/error-type.enum';
 import { ErrorMessage } from '../common/types/error.message';
 import { ServiceResult } from '../common/types/service.result';
@@ -20,7 +20,6 @@ export class UsersService {
   async serviceCreate(
     createUserDto: CreateUserDto,
   ): Promise<ServiceResult<FrontReadUser>> {
-
     const repo_user = await this.userRepository.createUser(createUserDto);
 
     // on vérifie si une erreur s'est passé
@@ -28,7 +27,7 @@ export class UsersService {
       return ServiceResult.error_service(
         repo_user.error,
         repo_user.statusCode,
-        'SERVICE USER',
+        SERVICE_NAMES_MAPPING.USER_SERVICE,
       );
     }
 
@@ -53,7 +52,7 @@ export class UsersService {
           "Erreur lors de la mise en cache de l'utilisateur",
         ),
         500,
-        'SERVICE USER',
+        SERVICE_NAMES_MAPPING.USER_SERVICE,
       );
     }
   }
@@ -77,7 +76,7 @@ export class UsersService {
       return ServiceResult.error_service(
         users.error,
         users.statusCode,
-        'SERVICE USER',
+        SERVICE_NAMES_MAPPING.USER_SERVICE,
       );
     }
 
@@ -97,14 +96,13 @@ export class UsersService {
           'Erreur Interne ou erreur de conversion des données',
         ),
         500,
-        'SERVICE USER',
+        SERVICE_NAMES_MAPPING.USER_SERVICE,
       );
     }
   }
 
   // fonction service get users by id
   async serviceGetUserById(id: UUID): Promise<ServiceResult<FrontReadUser>> {
-    
     const cacheUser = await this.usersCache.getUserFromCache(id);
 
     if (cacheUser !== null) {
@@ -117,7 +115,7 @@ export class UsersService {
       return ServiceResult.error_service(
         user_repo.error,
         user_repo.statusCode,
-        'USER SERVICE',
+        SERVICE_NAMES_MAPPING.USER_SERVICE,
       );
     }
 
@@ -128,7 +126,7 @@ export class UsersService {
 
       return ServiceResult.success_service(frontUser, user_repo.statusCode);
     } catch (error) {
-      console.error(`[userService.serviceGetUserById] ==> ERREUR: ${error}`);
+      console.error('[userService.serviceGetUserById] ==> ERREUR: ', error);
       return ServiceResult.error_service(
         new ErrorMessage(
           ErrorType.INTERNAL_SERVER_ERROR,
