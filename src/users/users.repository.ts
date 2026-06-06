@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import * as argon2 from 'argon2';
 import { UUID } from 'node:crypto';
 import { ADMIN_SCOPE } from 'src/common/constants/global.constants';
 import { handleProjectErrors } from 'src/common/errors-handlers/generic-error.handler';
@@ -10,6 +9,7 @@ import { ErrorMessage } from 'src/common/types/error.message';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserWithStore } from './global-user/user.message';
+import { hashPassword } from 'src/common/utils/password.hash';
 
 @Injectable()
 export class UsersRepository {
@@ -20,7 +20,7 @@ export class UsersRepository {
     const { storeId, username, email, password, role } = userDto;
 
     try {
-      const hashedPassword: string = await argon2.hash(password);
+      const hashedPassword: string = await hashPassword(password);
 
       const createdUser = await this.prismaService.user.create({
         data: {
