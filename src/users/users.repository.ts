@@ -9,7 +9,7 @@ import { ErrorMessage } from 'src/common/types/error.message';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserWithStore } from './global-user/user.message';
-import { hashPassword } from 'src/common/utils/password.hash';
+import { hashData } from 'src/common/utils/password.hash';
 
 @Injectable()
 export class UsersRepository {
@@ -20,7 +20,7 @@ export class UsersRepository {
     const { storeId, username, email, password, role } = userDto;
 
     try {
-      const hashedPassword: string = await hashPassword(password);
+      const hashedPassword: string = await hashData(password);
 
       const createdUser = await this.prismaService.user.create({
         data: {

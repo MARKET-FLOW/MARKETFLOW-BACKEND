@@ -18,6 +18,7 @@ import { CacheModule, CacheModuleOptions } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { AuthModule } from './auth/auth.module';
     StoresModule,
     SyncQueuesModule,
     AuthModule,
+    CommonModule
   ],
   controllers: [AppController],
   providers: [AppService],
