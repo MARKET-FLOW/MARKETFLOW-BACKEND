@@ -12,8 +12,8 @@ import { UUID } from 'node:crypto';
 @Injectable()
 export class ProductsRepository {
   constructor(private readonly prisma: PrismaService) {}
-  
-//fonction pour créer un produit
+
+  //fonction pour créer un produit
   async createProduct(
     createDto: Prisma.ProductCreateInput,
   ): Promise<CRUDResult<Product>> {
@@ -36,7 +36,8 @@ export class ProductsRepository {
       const page = pagination?.page ?? 1;
       const limit = pagination?.limit ?? 10;
       const skip = (page - 1) * limit;
-      const where = admin === ADMIN_SCOPE ? {} : { isActive: true, deletedAt: null };
+      const where =
+        admin === ADMIN_SCOPE ? {} : { isActive: true, deletedAt: null };
 
       const products = await this.prisma.product.findMany({
         where,
@@ -76,73 +77,63 @@ export class ProductsRepository {
   async getProductById(id: UUID, admin?: string): Promise<CRUDResult<Product>> {
     try {
       let product;
-      if(admin === ADMIN_SCOPE){
-          product = await this.prisma.product.findUnique({
-            where: {id},
-          });
-      }
-      else{
+      if (admin === ADMIN_SCOPE) {
+        product = await this.prisma.product.findUnique({
+          where: { id },
+        });
+      } else {
         product = await this.prisma.product.findFirst({
           where: {
             id: id,
             isActive: true,
             deletedAt: null,
-          }
+          },
         });
-
       }
-      if(product === null){
+      if (product === null) {
         console.log('[producRepository.getProductById] ==> Produit non trouvé');
         return CRUDResult.crud_error(
-          new ErrorMessage(
-            ErrorType.NOT_FOUND,
-            'Produit non trouvé'
-          ),
-          404
+          new ErrorMessage(ErrorType.NOT_FOUND, 'Produit non trouvé'),
+          404,
         );
       }
-      return CRUDResult.crud_success(product, 200)
+      return CRUDResult.crud_success(product, 200);
     } catch (error) {
-      return handleProjectErrors<Product>(error);
-   }
-  }
-
-
-  async updateProduct(id: UUID, updateProduct: Prisma.ProductUpdateInput): Promise<CRUDResult<Product>>{
-      
-    try{
-      const existProduct = await this.prisma.product.findFirst({
-        where: {
-          id: id,
-          isActive: true,
-          deletedAt: null
-        }
-      });
-
-      if(existProduct === null){
-        console.log('[productRepository.update] ==> Ce produit n\'existe pas');
-        return CRUDResult.crud_error(
-          new ErrorMessage(
-            ErrorType.NOT_FOUND,
-            `Ce produit n'existe pas `
-          ),
-          404
-        );
-      }
-      const updatedProduct =  await this.prisma.product.update({
-        where: { id },
-        data: updateProduct
-      })
-      return CRUDResult.crud_success(updatedProduct, 200)
-
-
-    }catch(error){
       return handleProjectErrors<Product>(error);
     }
   }
 
-  async deleteProduct(id: UUID): Promise<CRUDResult<string>>  {
-    
+  async updateProduct(
+    id: UUID,
+    updateProduct: Prisma.ProductUpdateInput,
+  ): Promise<CRUDResult<Product>> {
+    try {
+      const existProduct = await this.prisma.product.findFirst({
+        where: {
+          id: id,
+          isActive: true,
+          deletedAt: null,
+        },
+      });
+
+      if (existProduct === null) {
+        console.log("[productRepository.update] ==> Ce produit n'existe pas");
+        return CRUDResult.crud_error(
+          new ErrorMessage(ErrorType.NOT_FOUND, `Ce produit n'existe pas `),
+          404,
+        );
+      }
+      const updatedProduct = await this.prisma.product.update({
+        where: { id },
+        data: updateProduct,
+      });
+      return CRUDResult.crud_success(updatedProduct, 200);
+    } catch (error) {
+      return handleProjectErrors<Product>(error);
+    }
+  }
+
+  async deleteProduct(id: UUID): Promise<CRUDResult<string>> {
     try {
       //soft delete pour simuler la suppression
       await this.prisma.product.update({
@@ -154,7 +145,7 @@ export class ProductsRepository {
       });
 
       return CRUDResult.crud_success('Produit supprimé avec succès', 200);
-    }catch(error){
+    } catch (error) {
       return handleProjectErrors<string>(error);
     }
   }

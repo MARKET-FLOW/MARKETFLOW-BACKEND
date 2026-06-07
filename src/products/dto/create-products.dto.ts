@@ -11,7 +11,6 @@ import {
 } from 'class-validator';
 import { UUID } from 'crypto';
 import { ApiResponse } from 'src/common/types/api.response';
-//import type { Store, User } from '@prisma/client';
 
 export class CreateProductDto {
   @ApiProperty({
@@ -156,7 +155,7 @@ export class FrontReadProduct {
 
   @Expose()
   @TransformDate()
-  updateAt?: string;
+  updatedAt?: string;
 }
 
 export class FrontProductInfos extends ApiResponse<FrontReadProduct> {

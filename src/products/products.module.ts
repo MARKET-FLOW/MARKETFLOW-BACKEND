@@ -5,7 +5,6 @@ import { ProductsRepository } from './products.repository';
 import { RedisCacheService } from 'src/common/cache/redis-cache.service';
 
 @Module({
-  
   controllers: [ProductsController],
   providers: [ProductsService, ProductsRepository, RedisCacheService],
 })
