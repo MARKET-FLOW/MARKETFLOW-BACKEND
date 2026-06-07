@@ -3,4 +3,5 @@ export enum CacheDomain {
   USER = 'USER',
   PRODUCT = 'PRODUCT',
   AUTH = 'AUTH',
+  CATEGORY = 'CATEGORY',
 }
