@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { UUID } from 'node:crypto';
 import { ADMIN_SCOPE } from 'src/common/constants/global.constants';
@@ -13,7 +12,7 @@ import { hashData } from 'src/common/utils/password.hash';
 
 @Injectable()
 export class UsersRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   // fonction pour créer un tilisateur
   async createUser(userDto: CreateUserDto): Promise<CRUDResult<UserWithStore>> {
@@ -87,7 +86,7 @@ export class UsersRepository {
         where: {
           id: id,
           isActive: true,
-          deletedAt: null
+          deletedAt: null,
         },
         include: {
           store: true,
@@ -109,7 +108,6 @@ export class UsersRepository {
       return handleProjectErrors<UserWithStore>(error);
     }
   }
-
 
   // fonction pour supprimer un utilisateur
   async deleteUser(id: UUID): Promise<CRUDResult<string>> {

@@ -4,7 +4,6 @@ import { UpdateCategorieDto } from './dto/update-categories.dto';
 
 @Injectable()
 export class CategoriesService {
-
   create(createCategorieDto: CreateCategorieDto) {
     return 'This action adds a new categories';
   }

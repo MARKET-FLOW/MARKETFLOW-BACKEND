@@ -4,7 +4,6 @@ import { UpdateSaleItemDto } from './dto/update-sale-items.dto';
 
 @Injectable()
 export class SaleItemsService {
-
   create(createSaleItemDto: CreateSaleItemDto) {
     return 'This action adds a new sale-items';
   }

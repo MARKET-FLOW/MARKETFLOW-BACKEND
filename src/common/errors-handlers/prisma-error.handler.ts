@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Prisma } from '@prisma/client';
 import { CRUDResult } from '../types/crud.result';
 import { ErrorMessage } from '../types/error.message';
@@ -7,7 +6,6 @@ import { handleGenericError } from './generic-error.handler';
 
 export function handlePrismaError<T>(error: unknown): CRUDResult<T> {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    
     console.error('A known Prisma error occurred:', error);
     return CRUDResult.crud_error({
       error_message: new ErrorMessage(
@@ -16,9 +14,7 @@ export function handlePrismaError<T>(error: unknown): CRUDResult<T> {
       ),
       statusCode: 409,
     });
-
   } else if (error instanceof Prisma.PrismaClientValidationError) {
-
     console.error('Prima validation error occured:', error);
     return CRUDResult.crud_error({
       error_message: new ErrorMessage(
@@ -27,9 +23,7 @@ export function handlePrismaError<T>(error: unknown): CRUDResult<T> {
       ),
       statusCode: 400,
     });
-
   } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
-
     console.error('An unknown Prisma error occurred:', error);
     return CRUDResult.crud_error({
       error_message: new ErrorMessage(
@@ -41,5 +35,4 @@ export function handlePrismaError<T>(error: unknown): CRUDResult<T> {
   }
 
   return handleGenericError(error);
-
 }

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -25,8 +24,6 @@ import {
 } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { FrontUserInfos, ListFrontUserInfos } from './dto/front-read.user';
-
-
 
 @ApiTags(USER_TAG)
 @Controller('users')
@@ -84,27 +81,25 @@ export class UsersController {
   @ApiParam({
     name: 'id',
     type: 'string',
-    format: 'UUID'
+    format: 'UUID',
   })
   @ApiOperation({
-    summary: 'Récupérer un utilisateur par Id'
+    summary: 'Récupérer un utilisateur par Id',
   })
   @SwaggerApiResponse({
-    description: 'Route pour récupérer un utilisateur en utilisant son identifiant unique',
+    description:
+      'Route pour récupérer un utilisateur en utilisant son identifiant unique',
     status: 200,
-    type: FrontUserInfos
+    type: FrontUserInfos,
   })
-  @SwaggerApiResponse(
-    {
-      status: 404,
-      description: 'Utilisateur non trouvé pour l\'identifiant fournie'
-    }
-  )
-  async getUserById(@Res() _response: Response, @Param('id') id: UUID){
+  @SwaggerApiResponse({
+    status: 404,
+    description: "Utilisateur non trouvé pour l'identifiant fournie",
+  })
+  async getUserById(@Res() _response: Response, @Param('id') id: UUID) {
     const serviceResult = await this.usersService.serviceGetUserById(id);
     return serviceResult.to_HTTP_api_base_response(_response);
   }
-
 
   // controller pour supprimer un utilisateur
   @Delete(':id')

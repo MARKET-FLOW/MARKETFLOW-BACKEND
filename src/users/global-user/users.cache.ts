@@ -67,7 +67,10 @@ export class UsersCache {
   /**
    * Ajouter une liste d'utilisateurs au cache.
    */
-  async setUserListToCache( userList: FrontReadUser[], adminScope?: string, ): Promise<void> {
+  async setUserListToCache(
+    userList: FrontReadUser[],
+    adminScope?: string,
+  ): Promise<void> {
     try {
       const key = this.getUserListKey(adminScope);
       await this.redis.set(key, userList, CacheDuration.ONE_HOUR);

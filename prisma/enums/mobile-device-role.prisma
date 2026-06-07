@@ -1,0 +1,5 @@
+enum MobileDeviceRole {
+  SCANNER
+  TPE
+  SCANNER_TPE
+}
