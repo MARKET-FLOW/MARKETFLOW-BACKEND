@@ -43,7 +43,10 @@ export class JwtManager {
     secret: string,
   ): { refTokId: UUID; userId: UUID; role: Role } | null {
     try {
-      return this.jwt.verify(token, { secret: secret });
+      return this.jwt.verify<{ refTokId: UUID; userId: UUID; role: Role }>(
+        token,
+        { secret: secret },
+      );
     } catch {
       return null;
     }

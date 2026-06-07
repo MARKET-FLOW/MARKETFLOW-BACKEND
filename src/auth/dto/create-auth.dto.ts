@@ -30,3 +30,10 @@ export class UserAuthDto {
   role!: string
 
 }
+
+
+export class RefreshTokenDTO{
+  @ApiProperty({description: "Envoyer le refreshToken valide"})
+  @IsString()
+  refreshToken!: string
+}

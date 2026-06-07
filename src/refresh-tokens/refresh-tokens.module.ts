@@ -6,5 +6,6 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
 @Module({
   controllers: [RefreshTokensController],
   providers: [RefreshTokensService, RefreshTokensRepository],
+  exports: [RefreshTokensRepository],
 })
 export class RefreshTokensModule {}

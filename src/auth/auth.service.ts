@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtSignOptions } from '@nestjs/jwt';
 import { UUID } from 'node:crypto';
 import { ErrorType } from 'src/common/types/error-type.enum';
@@ -10,20 +11,22 @@ import { RefreshTokensRepository } from 'src/refresh-tokens/refresh-tokens.repos
 import { AuthRepository } from './auth.repository';
 import { JwtManager } from './auth_dependencies/jwt.manager';
 import { AuthReadDto } from './dto/auth.read';
-import { UserAuthDto } from './dto/create-auth.dto';
+import { RefreshTokenDTO, UserAuthDto } from './dto/create-auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly authRepo: AuthRepository,
     private readonly refreshTokenSession: RefreshTokensRepository,
-    private readonly jswtService: JwtManager,
+    private readonly jwtService: JwtManager,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
    * Ici je gère le processus de connexion d'un utilisateur.
    * - Vérifier l'existence de l'utilisateur.
    * - Valider le mot de passe.
+   * - Mettre à jour la date de dernière connexion.
    * - Créer une session de refresh token en base de données.
    * - Génèrer les tokens (Access & Refresh).
    */
@@ -55,6 +58,16 @@ export class AuthService {
       );
     }
 
+    // Mise à jour de la date de dernière connexion de l'utilisateur
+    const updateLastLoginResult = await this.authRepo.updateLastLogin(
+      authRepoResponse.data.id as UUID,
+    );
+    if (updateLastLoginResult.isError) {
+      console.error(
+        `[AuthService.serviceLogin] Erreur lors de la mise à jour de la date de dernière connexion : ${updateLastLoginResult.error}`,
+      );
+    }
+
     const tokenData: CreateRefreshTokenDto = {
       storeId: authRepoResponse.data.storeId,
       userId: authRepoResponse.data.id,
@@ -72,18 +85,24 @@ export class AuthService {
     }
 
     // on cré les access
-    const accessToken = this.jswtService.generateAccessToken(
+    const accessToken = this.jwtService.generateAccessToken(
       refreshRepoResponse.data.id as UUID,
       refreshRepoResponse.data.userId as UUID,
       authRepoResponse.data.role,
-      process.env.JWT_SECRET ?? '',
-      (process.env.JWT_EXPIRES_IN as JwtSignOptions['expiresIn']) ?? '30m',
+      this.configService.get<string>('JWT_SECRET', ''),
+      this.configService.get<JwtSignOptions['expiresIn']>(
+        'JWT_EXPIRES_IN',
+        '30m',
+      ),
     );
 
-    const refreshToken = this.jswtService.generateRefreshToken(
+    const refreshToken = this.jwtService.generateRefreshToken(
       tokenData.tokenHash,
-      process.env.JWT_REFRESH ?? '',
-      (process.env.JWT_EXPIRES_IN as JwtSignOptions['expiresIn']) ?? '1d',
+      this.configService.get<string>('JWT_REFRESH', ''),
+      this.configService.get<JwtSignOptions['expiresIn']>(
+        'JWT_REFRESH_EXPIRES_IN',
+        '1d',
+      ),
     );
 
     // on cré les cookies si c'est web
@@ -106,11 +125,11 @@ export class AuthService {
    * - Récupère les données à jour de l'utilisateur pour le nouveau token.
    */
   async serviceRefreshToken(
-    refreshToken: string,
+    refreshToken: RefreshTokenDTO,
   ): Promise<ServiceResult<{ accessToken: string }>> {
-    const payload = this.jswtService.verifyRefreshToken(
-      refreshToken,
-      process.env.JWT_REFRESH ?? '',
+    const payload = this.jwtService.verifyRefreshToken(
+      refreshToken.refreshToken,
+      this.configService.get<string>('JWT_REFRESH', ''),
     );
 
     if (!payload) {
@@ -146,12 +165,15 @@ export class AuthService {
       );
     }
 
-    const accessToken = this.jswtService.generateAccessToken(
+    const accessToken = this.jwtService.generateAccessToken(
       sessionResponse.data.id as UUID,
       userRepoResponse.data.id as UUID,
       userRepoResponse.data.role,
-      process.env.JWT_SECRET ?? '',
-      (process.env.JWT_EXPIRES_IN as JwtSignOptions['expiresIn']) ?? '30m',
+      this.configService.get<string>('JWT_SECRET', ''),
+      this.configService.get<JwtSignOptions['expiresIn']>(
+        'JWT_EXPIRES_IN',
+        '30m',
+      ),
     );
 
     return ServiceResult.success_service({ accessToken }, 200);

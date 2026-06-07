@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { RedisCacheService } from '../../common/cache/redis-cache.service';
-import { FrontReadUser } from '../dto/create-user.dto';
 import { CacheKeyFactory } from '../../common/cache/cache-key.factory';
 import { CacheDomain } from '../../common/cache/enum.cache.domain';
 import { CacheDuration } from '../../common/cache/cache.duration.enum';
 import { ADMIN_SCOPE } from '../../common/constants/global.constants';
+import { FrontReadUser } from '../dto/read.user.';
 
 @Injectable()
 export class UsersCache {

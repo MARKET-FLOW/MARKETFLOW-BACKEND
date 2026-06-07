@@ -5,7 +5,7 @@
     "test",
     "dist",
     "**/*spec.ts",
-    "prisma.config.ts",
+    "prisma.config.ts"
   ],
   "include": [
     "src/**/*" 

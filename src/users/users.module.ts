@@ -15,5 +15,6 @@ import { UsersCache } from './global-user/users.cache';
     RedisCacheService,
     UsersCache
   ],
+  exports: [UsersRepository], 
 })
 export class UsersModule {}
