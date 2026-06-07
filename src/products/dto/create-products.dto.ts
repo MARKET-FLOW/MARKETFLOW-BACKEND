@@ -47,8 +47,8 @@ export class CreateProductDto {
     description: 'Barcode',
   })
   @IsString({ message: `barcode est une chaîne de caractère` })
-  @IsNotEmpty({ message: `Barcode est requis` })
-  barcode!: string;
+  @IsOptional()
+  barcode?: string;
 
   @ApiProperty({
     description: `Le prix d'achat du produit`,
@@ -112,47 +112,113 @@ export const TransformDate = () =>
   });
 
 export class FrontReadProduct {
+  @ApiProperty({
+    description: 'ID unique de l’utilisateur',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  @Expose()
+  id!: UUID;
+
+  @ApiProperty({
+    description: 'ID du store du produit',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
   @Expose()
   storeId!: UUID;
 
+  @ApiProperty({
+    description: 'ID de la catégorie du produit',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
   @Expose()
   categoryId?: UUID;
-
+  @ApiProperty({
+    description: 'ID de l’utilisateur qui a créé le produit',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
   @Expose()
   createdBy!: string;
 
+  @ApiProperty({
+    description: 'Nom du produit',
+    example: 'Ordinateur',
+  })
   @Expose()
   name!: string;
 
+  @ApiProperty({
+    description: 'Barcode',
+    example: '123456789012',
+  })
   @Expose()
-  barcode!: string;
+  barcode?: string;
 
+  @ApiProperty({
+    description: 'Prix d\'achat du produit',
+    example: 500000.0,
+  })
   @Expose()
   purchasePrice!: number;
 
+  @ApiProperty({
+    description: 'Prix de vente du produit',
+    example: 700000.0,
+  })
   @Expose()
   sellingPrice!: number;
 
+  @ApiProperty({
+    description: 'Taux de taxe du produit',
+    example: 5,
+  })
   @Expose()
   taxRate!: number;
 
+  @ApiProperty({
+    description: 'La quantité en stock du produit',
+    example: 10,
+  })
   @Expose()
   stockQuantity!: number;
 
+  @ApiProperty({
+    description: `Seuil d'alerte de réaprovisionement`,
+    example: 2,
+  })
   @Expose()
   stockMinAlert!: number;
 
+  @ApiProperty({
+    description: 'Le produit est active ou non',
+    example: true,
+  })
   @Expose()
   isActive!: boolean;
 
+  @ApiProperty({
+    description: 'Date de suppression du produit',
+    example: '2023-10-10T10:00:00.000Z',
+  })
   @Expose()
   @TransformDate()
   deletedAt?: string;
 
+  @ApiProperty({
+    description: 'Date de création du produit',
+    example: '2023-10-10T10:00:00.000Z',
+  })
   @Expose()
   @TransformDate()
   createdAt!: string;
 
+  @ApiProperty({
+    description: 'Date de mise à jour du produit',
+    example: '2023-10-10T10:00:00.000Z',
+  })
+  @ApiProperty({
+    description: 'Date de mise à jour du produit',
+    example: '2023-10-10T10:00:00.000Z',
+  })
   @Expose()
   @TransformDate()
   updatedAt?: string;
