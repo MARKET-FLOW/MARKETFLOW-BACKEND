@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { UUID } from 'node:crypto';
 import { CacheKeyFactory } from 'src/common/cache/cache-key.factory';
@@ -15,7 +14,6 @@ import { UsersRepository } from './users.repository';
 
 // Définition de quelques constantes du fichier
 const USERS_LIST_CACHE_ID: string = 'users:list';
-
 
 @Injectable()
 export class UsersService {
@@ -88,7 +86,10 @@ export class UsersService {
     admin?: string,
   ): Promise<ServiceResult<FrontReadUser[]>> {
     // Différentié les clés de cache pour les listes d'utilisateurs en fonction du rôle (admin ou non)
-    const cache_id = admin === ADMIN_SCOPE ? `${USERS_LIST_CACHE_ID}:admin` : USERS_LIST_CACHE_ID;
+    const cache_id =
+      admin === ADMIN_SCOPE
+        ? `${USERS_LIST_CACHE_ID}:admin`
+        : USERS_LIST_CACHE_ID;
     const list_cache_key = CacheKeyFactory.create(CacheDomain.USER, cache_id);
 
     // On checke d'abord dans le cache avec la clé complète
@@ -100,9 +101,9 @@ export class UsersService {
 
     // Si pas de données dans le cache, on va les chercher dans la base de données
     const users = await this.userRepository.getAllUsers(admin);
-    
+
     if (users.isError) {
-      console.error("Erreur dans SERVICE USER: fn serviceGetAllUsers")
+      console.error('Erreur dans SERVICE USER: fn serviceGetAllUsers');
       return ServiceResult.error_service(
         users.error,
         users.statusCode,
@@ -136,32 +137,23 @@ export class UsersService {
   }
 
   // fonction service get users by id
-  async serviceGetUserById(id: UUID): Promise<ServiceResult<FrontReadUser>>{
+  async serviceGetUserById(id: UUID): Promise<ServiceResult<FrontReadUser>> {
+    const cache_key = CacheKeyFactory.create(CacheDomain.USER, id);
 
-    const cache_key = CacheKeyFactory.create(
-      CacheDomain.USER,
-      id
-    ) 
+    const cacheUser = await this.redis.get<FrontReadUser>(cache_key);
 
-    const cacheUser = await this.redis.get<FrontReadUser>(
-      cache_key
-    )
-
-    if (cacheUser !== null) { 
-      return ServiceResult.success_service(
-        cacheUser,
-        200
-      )
+    if (cacheUser !== null) {
+      return ServiceResult.success_service(cacheUser, 200);
     }
 
     const user_repo = await this.userRepository.getUserByID(id);
-    
-    if (user_repo.isError){
+
+    if (user_repo.isError) {
       return ServiceResult.error_service(
         user_repo.error,
         user_repo.statusCode,
-        'USER SERVICE'
-      )
+        'USER SERVICE',
+      );
     }
 
     // mise en cache
@@ -170,23 +162,19 @@ export class UsersService {
       await this.redis.set(
         cache_key,
         frontUser,
-        CacheDuration.USER_DURATION.valueOf()
-      ) 
-      
-      return ServiceResult.success_service(
-        frontUser,
-        user_repo.statusCode
-      )
-      
+        CacheDuration.USER_DURATION.valueOf(),
+      );
+
+      return ServiceResult.success_service(frontUser, user_repo.statusCode);
     } catch (error) {
-      console.error(`[userService.serviceGetUserById] ==> ERREUR: ${error}`)
+      console.error('[userService.serviceGetUserById] ==> ERREUR: ', error);
       return ServiceResult.error_service(
         new ErrorMessage(
           ErrorType.INTERNAL_SERVER_ERROR,
-          'Erreur de validation ou de mise en cache'
+          'Erreur de validation ou de mise en cache',
         ),
         500,
-      )
+      );
     }
   }
 
