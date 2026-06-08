@@ -15,6 +15,7 @@ import { PaginatedData } from 'src/common/types/paginated.data';
 import { ADMIN_SCOPE } from 'src/common/constants/global.constants';
 import { UUID } from 'crypto';
 import { UpdateProductDto } from './dto/update-products.dto';
+import { SERVICE_NAMES_MAPPING } from 'src/common/constants/services-names.constants';
 
 const PRODUCT_LIST_CACHE_ID: string = 'products:list';
 
@@ -46,7 +47,7 @@ export class ProductsService {
       return ServiceResult.error_service(
         repo_product.error,
         repo_product.statusCode,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
 
@@ -87,7 +88,7 @@ export class ProductsService {
           'Erreur lors de la mise en cache du produit',
         ),
         500,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
   }
@@ -125,7 +126,7 @@ export class ProductsService {
       return ServiceResult.error_service(
         products.error,
         products.statusCode,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
 
@@ -164,7 +165,7 @@ export class ProductsService {
           'Erreur interne ou erreur de conversion des données',
         ),
         500,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
   }
@@ -191,7 +192,7 @@ export class ProductsService {
       return ServiceResult.error_service(
         repo_product.error,
         repo_product.statusCode,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
 
@@ -225,7 +226,7 @@ export class ProductsService {
           'Erreur lors de la mise en cache du produit',
         ),
         500,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
   }
@@ -248,7 +249,7 @@ export class ProductsService {
       return ServiceResult.error_service(
         repo_product.error,
         repo_product.statusCode,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
 
@@ -283,7 +284,7 @@ export class ProductsService {
           'Erreur lors de la mise en cache du produit',
         ),
         500,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
   }
@@ -295,7 +296,7 @@ export class ProductsService {
         return ServiceResult.error_service(
           repo_result.error,
           repo_result.statusCode,
-          'SERVICE PRODUCT',
+          SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
         );
       }
 
@@ -324,7 +325,7 @@ export class ProductsService {
           'Erreur lors de la suppression du produit',
         ),
         500,
-        'SERVICE PRODUCT',
+        SERVICE_NAMES_MAPPING.PRODUCT_SERVICE,
       );
     }
   }
