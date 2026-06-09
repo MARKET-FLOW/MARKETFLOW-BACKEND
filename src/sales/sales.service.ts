@@ -1,39 +1,85 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSaleDto } from './dto/create-sales.dto';
+import { CreateSaleDto, FrontReadSale } from './dto/create-sales.dto';
 import { UpdateSaleDto } from './dto/update-sales.dto';
 import { SalesRepository } from './sales.repository';
-import { CRUDResult } from 'src/common/types/crud.result';
-import { Sale } from '@prisma/client';
+import { ServiceResult } from 'src/common/types/service.result';
+import { SERVICE_NAMES_MAPPING } from 'src/common/constants/services-names.constants';
+import { SaleMapper } from './mappers/sale.mapper';
 
 @Injectable()
 export class SalesService {
   constructor(private readonly salesRepository: SalesRepository) {}
 
-  // Appelle le repository pour créer une vente
-  async create(createSaleDto: CreateSaleDto): Promise<CRUDResult<Sale>> {
-    return this.salesRepository.createSale(createSaleDto);
+  async create(
+    createSaleDto: CreateSaleDto,
+  ): Promise<ServiceResult<FrontReadSale>> {
+    const crud_result = await this.salesRepository.createSale(createSaleDto);
+    if (crud_result.isError) {
+      return crud_result.toServiceError(SERVICE_NAMES_MAPPING.SALES_SERVICE);
+    }
+    const saleToFront = SaleMapper.toFront(crud_result.data as any);
+    return ServiceResult.success_service(
+      saleToFront,
+      crud_result.statusCode,
+      SERVICE_NAMES_MAPPING.SALES_SERVICE,
+    );
   }
 
-  // Appelle le repository pour récupérer toutes les ventes
-  async findAll(storeId?: string): Promise<CRUDResult<Sale[]>> {
-    return this.salesRepository.findAllSales(storeId);
+  async findAll(storeId?: string): Promise<ServiceResult<FrontReadSale[]>> {
+    const crud_result = await this.salesRepository.findAllSales(storeId);
+    if (crud_result.isError) {
+      return crud_result.toServiceError(SERVICE_NAMES_MAPPING.SALES_SERVICE);
+    }
+    const salesToFront = SaleMapper.toFrontList(crud_result.data as any[]);
+    return ServiceResult.success_service(
+      salesToFront,
+      crud_result.statusCode,
+      SERVICE_NAMES_MAPPING.SALES_SERVICE,
+    );
   }
 
-  // Appelle le repository pour récupérer une seule vente par son ID
-  async findOne(id: string): Promise<CRUDResult<Sale>> {
-    return this.salesRepository.findSaleById(id);
+  async findOne(id: string): Promise<ServiceResult<FrontReadSale>> {
+    const crud_result = await this.salesRepository.findSaleById(id);
+    if (crud_result.isError) {
+      return crud_result.toServiceError(SERVICE_NAMES_MAPPING.SALES_SERVICE);
+    }
+    const saleToFront = SaleMapper.toFront(crud_result.data as any);
+    return ServiceResult.success_service(
+      saleToFront,
+      crud_result.statusCode,
+      SERVICE_NAMES_MAPPING.SALES_SERVICE,
+    );
   }
 
-  // Appelle le repository pour mettre à jour une vente
   async update(
     id: string,
     updateSaleDto: UpdateSaleDto,
-  ): Promise<CRUDResult<Sale>> {
-    return this.salesRepository.updateSale(id, updateSaleDto);
+  ): Promise<ServiceResult<FrontReadSale>> {
+    const crud_result = await this.salesRepository.updateSale(
+      id,
+      updateSaleDto,
+    );
+    if (crud_result.isError) {
+      return crud_result.toServiceError(SERVICE_NAMES_MAPPING.SALES_SERVICE);
+    }
+    const saleToFront = SaleMapper.toFront(crud_result.data as any);
+    return ServiceResult.success_service(
+      saleToFront,
+      crud_result.statusCode,
+      SERVICE_NAMES_MAPPING.SALES_SERVICE,
+    );
   }
 
-  // Appelle le repository pour supprimer une vente
-  async remove(id: string): Promise<CRUDResult<Sale>> {
-    return this.salesRepository.deleteSale(id);
+  async remove(id: string): Promise<ServiceResult<FrontReadSale>> {
+    const crud_result = await this.salesRepository.deleteSale(id);
+    if (crud_result.isError) {
+      return crud_result.toServiceError(SERVICE_NAMES_MAPPING.SALES_SERVICE);
+    }
+    const saleToFront = SaleMapper.toFront(crud_result.data as any);
+    return ServiceResult.success_service(
+      saleToFront,
+      crud_result.statusCode,
+      SERVICE_NAMES_MAPPING.SALES_SERVICE,
+    );
   }
 }
