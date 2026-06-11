@@ -8,15 +8,22 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { SaleItemsService } from './sale-items.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { ApiCommonDocs } from 'src/common/decorators/api.global.decorator';
+import { ApiCustomResponse } from 'src/common/decorators/api-response.decorator';
+import { FrontReadSaleItem } from './dto/create-sale-items.dto';
 
 @ApiTags('sale-items')
+@ApiCommonDocs()
 @Controller('sale-items')
 export class SaleItemsController {
   constructor(private readonly saleItemsService: SaleItemsService) {}
 
-  // GET /sale-items : Récupérer les articles (filtrer par saleId)
+  /**
+   * Récupère toutes les lignes de vente.
+   * Permet de filtrer par l'identifiant de la facture parente (saleId)
+   */
   @Get()
   @Roles('OWNER', 'MANAGER', 'CASHIER')
   @ApiOperation({ summary: 'Récupérer les articles de vente' })
@@ -25,18 +32,19 @@ export class SaleItemsController {
     required: false,
     description: 'Filtrer par facture',
   })
-  @ApiResponse({ status: 200, description: 'Liste des articles' })
+  @ApiCustomResponse(FrontReadSaleItem, true)
   async findAll(@Res() _response: Response, @Query('saleId') saleId?: string) {
     const service_result = await this.saleItemsService.findAll(saleId);
     return service_result.to_HTTP_api_base_response(_response);
   }
 
-  // GET /sale-items/:id : Récupérer un article spécifique
+  /**
+   * Récupère les détails d'un article spécifique vendu
+   */
   @Get(':id')
   @Roles('OWNER', 'MANAGER', 'CASHIER')
   @ApiOperation({ summary: 'Récupérer un article par ID' })
-  @ApiResponse({ status: 200, description: "Détails de l'article" })
-  @ApiResponse({ status: 404, description: 'Article introuvable' })
+  @ApiCustomResponse(FrontReadSaleItem)
   async findOne(
     @Res() _response: Response,
     @Param('id', ParseUUIDPipe) id: string,

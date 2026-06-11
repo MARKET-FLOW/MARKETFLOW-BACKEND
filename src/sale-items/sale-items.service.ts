@@ -9,6 +9,11 @@ import { FrontReadSaleItem } from './dto/create-sale-items.dto';
 export class SaleItemsService {
   constructor(private readonly saleItemsRepository: SaleItemsRepository) {}
 
+  /**
+   * Récupère les lignes de vente, avec filtrage optionnel par facture (saleId).
+   * @param saleId Identifiant de la vente parente pour filtrer les lignes
+   * @returns Résultat de service contenant la liste des articles vendus
+   */
   async findAll(saleId?: string): Promise<ServiceResult<FrontReadSaleItem[]>> {
     const crud_result = await this.saleItemsRepository.findAll(saleId);
     if (crud_result.isError) {
@@ -24,6 +29,11 @@ export class SaleItemsService {
     );
   }
 
+  /**
+   * Récupère une ligne de vente spécifique par son identifiant unique.
+   * @param id Identifiant UUID de la ligne de vente
+   * @returns Résultat de service contenant les informations de l'article vendu
+   */
   async findOne(id: string): Promise<ServiceResult<FrontReadSaleItem>> {
     const crud_result = await this.saleItemsRepository.findById(id);
     if (crud_result.isError) {

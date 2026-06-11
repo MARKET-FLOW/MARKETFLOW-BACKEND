@@ -14,7 +14,7 @@ export const ApiCustomResponse = <TModel extends Type<any>>(
           { $ref: getSchemaPath(ApiResponse) },
           {
             properties: {
-              data: isList
+              result: isList
                 ? {
                     type: 'array',
                     items: { $ref: getSchemaPath(model) },
