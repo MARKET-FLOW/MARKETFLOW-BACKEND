@@ -8,68 +8,122 @@ import {
   Delete,
   Query,
   ParseUUIDPipe,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sales.dto';
 import { UpdateSaleDto } from './dto/update-sales.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
-import { CRUDResult } from 'src/common/types/crud.result';
-import { Sale } from '@prisma/client';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { ApiCommonDocs } from 'src/common/decorators/api.global.decorator';
+import { ApiCustomResponse } from 'src/common/decorators/api-response.decorator';
+import { FrontReadSale, FrontPaginatedSales } from './dto/create-sales.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginatedData } from 'src/common/types/paginated-data';
 
 @ApiTags('sales')
+@ApiCommonDocs()
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
-  // POST /sales : Enregistrer une nouvelle vente
+  /**
+   * Enregistre une nouvelle vente dans le système.
+   * Valide les données, crée la vente et génère les mouvements de stock associés.
+   */
   @Post()
+  @Roles('OWNER', 'MANAGER', 'CASHIER')
   @ApiOperation({ summary: 'Enregistrer une nouvelle vente' })
-  @ApiResponse({ status: 201, description: 'La vente a été enregistrée' })
+  @ApiCustomResponse(FrontReadSale)
   async create(
+    @Res() _response: Response,
     @Body() createSaleDto: CreateSaleDto,
-  ): Promise<CRUDResult<Sale>> {
-    return this.salesService.create(createSaleDto);
+  ) {
+    const service_result = await this.salesService.create(createSaleDto);
+    return service_result.to_HTTP_api_base_response(_response);
   }
 
-  // GET /sales : Récupérer toutes les ventes actives
+  /**
+   * Récupère la liste de toutes les ventes actives.
+   * Peut être filtrée par identifiant de magasin.
+   */
   @Get()
-  @ApiOperation({ summary: 'Récupérer toutes les ventes' })
-  @ApiQuery({ name: 'storeId', required: false })
-  @ApiResponse({ status: 200, description: 'Liste des ventes' })
+  @Roles('OWNER', 'MANAGER', 'CASHIER')
+  @ApiOperation({ summary: 'Récupérer toutes les ventes avec pagination' })
+  @ApiQuery({
+    name: 'storeId',
+    required: false,
+    description: 'Filtrer par ID de magasin',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Numéro de la page',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Éléments par page (max 100)',
+    example: 10,
+  })
+  @ApiCustomResponse(FrontPaginatedSales)
   async findAll(
+    @Res() _response: Response,
     @Query('storeId') storeId?: string,
-  ): Promise<CRUDResult<Sale[]>> {
-    return this.salesService.findAll(storeId);
+    @Query() paginationDto?: PaginationDto,
+  ) {
+    const service_result = await this.salesService.findAll(
+      storeId,
+      paginationDto,
+    );
+    return service_result.to_HTTP_api_base_response(_response);
   }
 
-  // GET /sales/:id : Récupérer les détails d'une vente spécifique
+  /**
+   * Récupère les détails complets d'une vente spécifique
+   */
   @Get(':id')
+  @Roles('OWNER', 'MANAGER', 'CASHIER')
   @ApiOperation({ summary: 'Récupérer une vente par ID' })
-  @ApiResponse({ status: 200, description: 'Détails de la vente' })
+  @ApiCustomResponse(FrontReadSale)
   async findOne(
+    @Res() _response: Response,
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<CRUDResult<Sale>> {
-    return this.salesService.findOne(id);
+  ) {
+    const service_result = await this.salesService.findOne(id);
+    return service_result.to_HTTP_api_base_response(_response);
   }
 
-  // PATCH /sales/:id : Modifier les informations d'une vente existante
+  /**
+   * Met à jour les informations d'une vente (ex: statut)
+   */
   @Patch(':id')
+  @Roles('OWNER', 'MANAGER') // Restreint aux managers/owners
   @ApiOperation({ summary: 'Modifier une vente' })
-  @ApiResponse({ status: 200, description: 'Vente mise à jour' })
+  @ApiCustomResponse(FrontReadSale)
   async update(
+    @Res() _response: Response,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateSaleDto: UpdateSaleDto,
-  ): Promise<CRUDResult<Sale>> {
-    return this.salesService.update(id, updateSaleDto);
+  ) {
+    const service_result = await this.salesService.update(id, updateSaleDto);
+    return service_result.to_HTTP_api_base_response(_response);
   }
 
-  // DELETE /sales/:id : Supprimer logiquement une vente
+  /**
+   * Supprime logiquement une vente
+   */
   @Delete(':id')
+  @Roles('OWNER', 'MANAGER') // Restreint aux managers/owners
   @ApiOperation({ summary: 'Supprimer une vente' })
-  @ApiResponse({ status: 200, description: 'Vente supprimée' })
+  @ApiCustomResponse(FrontReadSale)
   async remove(
+    @Res() _response: Response,
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<CRUDResult<Sale>> {
-    return this.salesService.remove(id);
+  ) {
+    const service_result = await this.salesService.remove(id);
+    return service_result.to_HTTP_api_base_response(_response);
   }
 }
