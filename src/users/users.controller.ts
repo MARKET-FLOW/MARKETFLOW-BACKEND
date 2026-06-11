@@ -3,27 +3,21 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Query,
   Res,
 } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-  ApiResponse as SwaggerApiResponse,
-} from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { UUID } from 'node:crypto';
 import { USER_TAG } from 'src/common/constants/api-tags.constant';
+import { ApiDoc } from 'src/common/decorators/api-response.decorator';
 import { GlobalStringMessage } from 'src/common/types/global.string-message';
-import {
-  CreateUserDto,
-} from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { FrontUserInfos } from './dto/front-read.user';
 import { UsersService } from './users.service';
-import { FrontUserInfos, ListFrontUserInfos } from './dto/front-read.user';
 
 @ApiTags(USER_TAG)
 @Controller('users')
@@ -32,15 +26,17 @@ export class UsersController {
 
   // constroller pour créer un utilisateur
   @Post('create')
-  @ApiOperation({ summary: "Création d'un nouvel utilisateur" }) // Titre dans Swagger
-  @SwaggerApiResponse({
-    status: 201,
-    description: 'L’utilisateur a été créé avec succès.',
-    type: FrontUserInfos, // On dit à Swagger d'utiliser ta classe de schéma de sortie
-  })
-  @SwaggerApiResponse({
-    status: 409,
-    description: 'Conflit : L’utilisateur (email ou username) existe déjà.',
+  @ApiDoc({
+    summary: "Création d'un nouvel utilisateur",
+    description:
+      "utilisateur créé avec succès, retourne les infos de l'utilisateur créé",
+    model: FrontUserInfos,
+    status: HttpStatus.CREATED,
+    errors: [
+      HttpStatus.CONFLICT,
+      HttpStatus.BAD_REQUEST,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    ],
   })
   async create(
     @Res() _response: Response,
@@ -57,19 +53,13 @@ export class UsersController {
     required: false,
     description: "Si la valeur est '1234', inclut les utilisateurs supprimés.",
   })
-  @ApiOperation({ summary: 'Récupération de tous les utilisateurs' })
-  @SwaggerApiResponse({
-    status: 200,
-    description: 'Liste de tous les utilisateurs.',
-    type: ListFrontUserInfos,
-  })
-  @SwaggerApiResponse({
-    status: 404,
-    description: 'Liste vide trouvée.',
-  })
-  @SwaggerApiResponse({
-    status: 500,
-    description: 'Erreur interne du serveur.',
+  @ApiDoc({
+    summary: 'Récupération de tous les utilisateurs',
+    description: 'Récupère la liste de tous les utilisateurs actifs.',
+    model: FrontUserInfos,
+    isList: true,
+    status: HttpStatus.OK,
+    errors: [HttpStatus.NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR],
   })
   async getAll(@Res() _response: Response, @Query('admin') admin?: string) {
     const service_result = await this.usersService.serviceGetAllUsers(admin);
@@ -83,18 +73,12 @@ export class UsersController {
     type: 'string',
     format: 'UUID',
   })
-  @ApiOperation({
+  @ApiDoc({
     summary: 'Récupérer un utilisateur par Id',
-  })
-  @SwaggerApiResponse({
-    description:
-      'Route pour récupérer un utilisateur en utilisant son identifiant unique',
-    status: 200,
-    type: FrontUserInfos,
-  })
-  @SwaggerApiResponse({
-    status: 404,
-    description: "Utilisateur non trouvé pour l'identifiant fournie",
+    description: 'Utilisateur récupéré avec succès.',
+    model: FrontUserInfos,
+    status: HttpStatus.OK,
+    errors: [HttpStatus.NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR],
   })
   async getUserById(@Res() _response: Response, @Param('id') id: UUID) {
     const serviceResult = await this.usersService.serviceGetUserById(id);
@@ -103,15 +87,12 @@ export class UsersController {
 
   // controller pour supprimer un utilisateur
   @Delete(':id')
-  @ApiOperation({ summary: 'Supprimer un utilisateur ' })
-  @SwaggerApiResponse({
-    description: 'Supprimer un utilisateur',
-    status: 200,
-    type: GlobalStringMessage,
-  })
-  @SwaggerApiResponse({
-    status: 500,
-    description: 'Erreur interne du serveur.',
+  @ApiDoc({
+    summary: 'Supprimer un utilisateur',
+    description: 'Utilisateur supprimé avec succès',
+    model: GlobalStringMessage,
+    status: HttpStatus.OK,
+    errors: [HttpStatus.NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR],
   })
   async deleteUser(@Res() _response: Response, @Param('id') id: UUID) {
     const service_result = await this.usersService.serviceDeleteUser(id);

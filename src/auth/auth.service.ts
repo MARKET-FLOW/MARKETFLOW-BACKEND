@@ -12,6 +12,7 @@ import { AuthRepository } from './auth.repository';
 import { JwtManager } from './auth_dependencies/jwt.manager';
 import { AuthReadDto } from './dto/auth.read';
 import { RefreshTokenDTO, UserAuthDto } from './dto/create-auth.dto';
+import { FindUserDtoField } from './dto/find-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,10 +34,10 @@ export class AuthService {
   async serviceLogin(
     authData: UserAuthDto,
   ): Promise<ServiceResult<AuthReadDto>> {
-    const authRepoResponse = await this.authRepo.findUserByFields(
-      'username',
-      authData.username,
-    );
+    const authRepoResponse = await this.authRepo.findUserByFields({
+      username: authData.username,
+      role: authData.role,
+    } as FindUserDtoField);
     if (authRepoResponse.isError) {
       return ServiceResult.error_service(
         authRepoResponse.error,
@@ -153,10 +154,9 @@ export class AuthService {
       );
     }
 
-    const userRepoResponse = await this.authRepo.findUserByFields(
-      'id',
-      sessionResponse.data.userId,
-    );
+    const userRepoResponse = await this.authRepo.findUserByFields({
+      id: sessionResponse.data.userId,
+    } as FindUserDtoField);
 
     if (userRepoResponse.isError) {
       return ServiceResult.error_service(

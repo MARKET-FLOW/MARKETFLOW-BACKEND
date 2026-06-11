@@ -6,6 +6,7 @@ import { ErrorType } from 'src/common/types/error-type.enum';
 import { ErrorMessage } from 'src/common/types/error.message';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserWithStore } from 'src/users/global-user/user.message';
+import { FindUserDtoField } from './dto/find-user.dto';
 
 @Injectable()
 export class AuthRepository {
@@ -13,13 +14,12 @@ export class AuthRepository {
 
 
   // fonction pour trouver un utilisateur par email ou username : de toute façon via un attribut donné
-  async findUserByFields(field: string, value: string): Promise<CRUDResult<UserWithStore>> {
+  async findUserByFields(fields: FindUserDtoField): Promise<CRUDResult<UserWithStore>> {
     try {
-      const fieldName: string = field.toLowerCase();
 
       const user = await this.prismaService.user.findFirst({
         where: {
-          [fieldName]: value,
+          ...fields,
           isActive: true,
           deletedAt: null,
         },
@@ -32,7 +32,7 @@ export class AuthRepository {
         return CRUDResult.crud_error(
           new ErrorMessage(
             ErrorType.NOT_FOUND,
-            `L'utilisateur avec ${field} ${value} non trouvé`,
+            `L'utilisateur avec les critères fournis non trouvé`,
           ),
           404,
         );
