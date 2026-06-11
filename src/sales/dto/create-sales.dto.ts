@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
+import { PaginatedData } from 'src/common/types/paginated-data';
 import {
   IsEnum,
   IsNotEmpty,
@@ -214,4 +215,12 @@ export class FrontSaleInfos extends ApiResponse<FrontReadSale> {
 export class ListFrontSaleInfos extends ApiResponse<FrontReadSale[]> {
   @ApiProperty({ type: () => [FrontReadSale], description: 'Liste des ventes' })
   declare result: FrontReadSale[];
+}
+
+export class FrontPaginatedSales extends PaginatedData<FrontReadSale> {
+  @ApiProperty({
+    type: () => [FrontReadSale],
+    description: 'Liste des ventes paginées',
+  })
+  declare items: FrontReadSale[];
 }

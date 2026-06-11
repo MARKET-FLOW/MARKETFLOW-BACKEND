@@ -5,6 +5,8 @@ import { SalesRepository } from './sales.repository';
 import { ServiceResult } from 'src/common/types/service.result';
 import { SERVICE_NAMES_MAPPING } from 'src/common/constants/services-names.constants';
 import { SaleMapper } from './mappers/sale.mapper';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginatedData } from 'src/common/types/paginated-data';
 
 @Injectable()
 export class SalesService {
@@ -34,16 +36,32 @@ export class SalesService {
   /**
    * Récupère la liste de toutes les ventes, avec filtrage optionnel par magasin.
    * @param storeId ID optionnel du magasin pour filtrer les ventes
-   * @returns Le résultat de service contenant la liste des ventes
+   * @param paginationDto Paramètres de pagination
+   * @returns Le résultat de service contenant la liste des ventes paginées
    */
-  async findAll(storeId?: string): Promise<ServiceResult<FrontReadSale[]>> {
-    const crud_result = await this.salesRepository.findAllSales(storeId);
+  async findAll(
+    storeId?: string,
+    paginationDto?: PaginationDto,
+  ): Promise<ServiceResult<PaginatedData<FrontReadSale>>> {
+    const crud_result = await this.salesRepository.findAllSales(
+      storeId,
+      paginationDto,
+    );
     if (crud_result.isError) {
       return crud_result.toServiceError(SERVICE_NAMES_MAPPING.SALES_SERVICE);
     }
-    const salesToFront = SaleMapper.toFrontList(crud_result.data as any[]);
-    return ServiceResult.success_service(
+    const salesToFront = SaleMapper.toFrontList(
+      crud_result.data.items as any[],
+    );
+    const paginatedResult = new PaginatedData<FrontReadSale>(
       salesToFront,
+      crud_result.data.meta.totalItems,
+      crud_result.data.meta.currentPage,
+      crud_result.data.meta.itemsPerPage,
+    );
+
+    return ServiceResult.success_service(
+      paginatedResult,
       crud_result.statusCode,
       SERVICE_NAMES_MAPPING.SALES_SERVICE,
     );

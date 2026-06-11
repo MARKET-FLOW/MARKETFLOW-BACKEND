@@ -3,12 +3,14 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginatedData } from 'src/common/types/paginated-data';
 import { CreateSaleDto } from './dto/create-sales.dto';
 import { UpdateSaleDto } from './dto/update-sales.dto';
 import { CRUDResult } from 'src/common/types/crud.result';
-import { Sale } from '@prisma/client';
+import { Sale, SaleOrigin, SessionStatus, MovementType } from '@prisma/client';
 import { handleProjectErrors } from 'src/common/errors-handlers/generic-error.handler';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class SalesRepository {
@@ -24,7 +26,7 @@ export class SalesRepository {
             id: dto.cashSessionId,
             cashierId: dto.cashierId,
             storeId: dto.storeId,
-            status: 'OPEN',
+            status: SessionStatus.OPEN,
             deletedAt: null,
           },
         });
@@ -113,7 +115,7 @@ export class SalesRepository {
             amountPaid: dto.amountPaid,
             changeAmount: dto.changeAmount,
             status: dto.status,
-            origin: dto.origin ?? 'POS',
+            origin: dto.origin ?? SaleOrigin.POS,
             mobileDeviceId: dto.mobileDeviceId ?? null,
             saleItems: {
               createMany: { data: saleItemsData },
@@ -129,7 +131,7 @@ export class SalesRepository {
               productId: movement.productId,
               userId: dto.cashierId,
               referenceId: createdSale.id,
-              movementType: 'OUT',
+              movementType: MovementType.OUT,
               quantity: movement.quantity,
               quantityBefore: movement.quantityBefore,
               quantityAfter: movement.quantityAfter,
@@ -147,21 +149,43 @@ export class SalesRepository {
     }
   }
 
-  // Récupérer toutes les ventes actives triées par date
-  async findAllSales(storeId?: string): Promise<CRUDResult<Sale[]>> {
+  // Récupérer toutes les ventes actives triées par date avec pagination
+  async findAllSales(
+    storeId?: string,
+    paginationDto?: PaginationDto,
+  ): Promise<CRUDResult<PaginatedData<Sale>>> {
     try {
-      const sales = await this.prisma.sale.findMany({
-        where: {
-          storeId: storeId ? storeId : undefined,
-          deletedAt: null, // Filtre pour ignorer les ventes en Soft Delete
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-      return CRUDResult.crud_success(sales, 200);
+      const page = paginationDto?.page || 1;
+      const limit = paginationDto?.limit || 10;
+      const skip = (page - 1) * limit;
+
+      const whereClause = {
+        storeId: storeId ? storeId : undefined,
+        deletedAt: null, // Filtre pour ignorer les ventes en Soft Delete
+      };
+
+      const [totalItems, sales] = await this.prisma.$transaction([
+        this.prisma.sale.count({ where: whereClause }),
+        this.prisma.sale.findMany({
+          where: whereClause,
+          skip,
+          take: limit,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+      ]);
+
+      const paginatedData = new PaginatedData<Sale>(
+        sales,
+        totalItems,
+        page,
+        limit,
+      );
+
+      return CRUDResult.crud_success(paginatedData, 200);
     } catch (error) {
-      return handleProjectErrors<Sale[]>(error);
+      return handleProjectErrors<PaginatedData<Sale>>(error);
     }
   }
 

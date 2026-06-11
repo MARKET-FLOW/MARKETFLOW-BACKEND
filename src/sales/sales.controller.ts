@@ -18,7 +18,9 @@ import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ApiCommonDocs } from 'src/common/decorators/api.global.decorator';
 import { ApiCustomResponse } from 'src/common/decorators/api-response.decorator';
-import { FrontReadSale } from './dto/create-sales.dto';
+import { FrontReadSale, FrontPaginatedSales } from './dto/create-sales.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginatedData } from 'src/common/types/paginated-data';
 
 @ApiTags('sales')
 @ApiCommonDocs()
@@ -48,14 +50,34 @@ export class SalesController {
    */
   @Get()
   @Roles('OWNER', 'MANAGER', 'CASHIER')
-  @ApiOperation({ summary: 'Récupérer toutes les ventes' })
-  @ApiQuery({ name: 'storeId', required: false })
-  @ApiCustomResponse(FrontReadSale, true)
+  @ApiOperation({ summary: 'Récupérer toutes les ventes avec pagination' })
+  @ApiQuery({
+    name: 'storeId',
+    required: false,
+    description: 'Filtrer par ID de magasin',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Numéro de la page',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Éléments par page (max 100)',
+    example: 10,
+  })
+  @ApiCustomResponse(FrontPaginatedSales)
   async findAll(
     @Res() _response: Response,
     @Query('storeId') storeId?: string,
+    @Query() paginationDto?: PaginationDto,
   ) {
-    const service_result = await this.salesService.findAll(storeId);
+    const service_result = await this.salesService.findAll(
+      storeId,
+      paginationDto,
+    );
     return service_result.to_HTTP_api_base_response(_response);
   }
 
