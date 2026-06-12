@@ -16,7 +16,7 @@ import { USER_TAG } from 'src/common/constants/api-tags.constant';
 import { ApiDoc } from 'src/common/decorators/api-response.decorator';
 import { GlobalStringMessage } from 'src/common/types/global.string-message';
 import { CreateUserDto } from './dto/create-user.dto';
-import { FrontUserInfos } from './dto/front-read.user';
+import { FrontReadUser } from './dto/read.user.'; 
 import { UsersService } from './users.service';
 
 @ApiTags(USER_TAG)
@@ -30,7 +30,7 @@ export class UsersController {
     summary: "Création d'un nouvel utilisateur",
     description:
       "utilisateur créé avec succès, retourne les infos de l'utilisateur créé",
-    model: FrontUserInfos,
+    model: FrontReadUser, // Utilisation du DTO de données pur
     status: HttpStatus.CREATED,
     errors: [
       HttpStatus.CONFLICT,
@@ -56,7 +56,7 @@ export class UsersController {
   @ApiDoc({
     summary: 'Récupération de tous les utilisateurs',
     description: 'Récupère la liste de tous les utilisateurs actifs.',
-    model: FrontUserInfos,
+    model: FrontReadUser, // Utilisation du DTO de données pur
     isList: true,
     status: HttpStatus.OK,
     errors: [HttpStatus.NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR],
@@ -76,7 +76,7 @@ export class UsersController {
   @ApiDoc({
     summary: 'Récupérer un utilisateur par Id',
     description: 'Utilisateur récupéré avec succès.',
-    model: FrontUserInfos,
+    model: FrontReadUser, // Utilisation du DTO de données pur
     status: HttpStatus.OK,
     errors: [HttpStatus.NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR],
   })

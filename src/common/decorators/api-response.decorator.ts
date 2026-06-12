@@ -12,9 +12,8 @@ import {
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { ApiResponse } from '../types/api.response';
 import { ValidationErrorResponseDto } from '../dto/validation-error-response.dto';
-
+import { ApiResponse } from '../types/api.response';
 
 export interface ApiDocOptions {
   summary: string;
@@ -24,7 +23,6 @@ export interface ApiDocOptions {
   errors?: number[];
   description?: string;
 }
-
 
 export const ApiDoc = (options: ApiDocOptions) => {
   const {
@@ -57,21 +55,21 @@ export const ApiDoc = (options: ApiDocOptions) => {
         })
       : ApiOkResponse({
           description: description || 'Opération réussie',
-      schema: {
-        allOf: [
-          { $ref: getSchemaPath(ApiResponse) },
-          {
-            properties: {
-              result: isList
-                ? {
-                    type: 'array',
-                    items: { $ref: getSchemaPath(model) },
-                  }
-                : { $ref: getSchemaPath(model) },
-            },
+          schema: {
+            allOf: [
+              { $ref: getSchemaPath(ApiResponse) },
+              {
+                properties: {
+                  result: isList
+                    ? {
+                        type: 'array',
+                        items: { $ref: getSchemaPath(model) },
+                      }
+                    : { $ref: getSchemaPath(model) },
+                },
+              },
+            ],
           },
-        ],
-      },
         }),
 
     // Erreurs standard incluses par défaut
@@ -80,19 +78,27 @@ export const ApiDoc = (options: ApiDocOptions) => {
       type: ValidationErrorResponseDto,
     }),
 
-    ApiInternalServerErrorResponse({ description: 'Erreur interne du serveur' }),
+    ApiInternalServerErrorResponse({
+      description: 'Erreur interne du serveur',
+    }),
     ...errors.map((errorCode) => {
       switch (errorCode) {
         case HttpStatus.NOT_FOUND:
           return ApiNotFoundResponse({ description: 'Ressource non trouvée' });
         case HttpStatus.CONFLICT:
-          return ApiConflictResponse({ description: 'Conflit : La ressource existe déjà' });
+          return ApiConflictResponse({
+            description: 'Conflit : La ressource existe déjà',
+          });
         case HttpStatus.UNAUTHORIZED:
-          return ApiUnauthorizedResponse({ description: 'Authentification requise' });
+          return ApiUnauthorizedResponse({
+            description: 'Authentification requise',
+          });
         case HttpStatus.FORBIDDEN:
-          return ApiForbiddenResponse({ description: 'Accès interdit / Permissions insuffisantes' });
+          return ApiForbiddenResponse({
+            description: 'Accès interdit / Permissions insuffisantes',
+          });
         default:
-          return () => {}; 
+          return () => {};
       }
     }),
   );

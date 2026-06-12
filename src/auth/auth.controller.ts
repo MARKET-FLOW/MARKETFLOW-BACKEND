@@ -7,24 +7,19 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AUTH_TAG } from 'src/common/constants/api-tags.constant';
 import { ApiDoc } from 'src/common/decorators/api-response.decorator';
-import { FrontUserInfos } from 'src/users/dto/front-read.user';
+import { ApiResponse } from 'src/common/types/api.response';
+import { FrontReadUser } from 'src/users/dto/read.user.';
 import { UserWithStore } from 'src/users/global-user/user.message';
 import { UserMapper } from 'src/users/mappers/user.mapper';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './auth_dependencies/decorators/current-user.decorator';
 import { JwtAuthGuard } from './auth_dependencies/decorators/jwt-auth.guard';
-import {
-  FrontAuthResponseInfos,
-  FrontRefreshTokenResponseInfos,
-} from './dto/auth.front';
+import { AuthReadDto, RefreshTokenReadDto } from './dto/auth.read';
 import { RefreshTokenDTO, UserAuthDto } from './dto/create-auth.dto';
-
 
 @ApiTags(AUTH_TAG)
 @Controller('auth')
@@ -34,7 +29,7 @@ export class AuthController {
   @Post('/login')
   @ApiDoc({
     summary: 'Récupérer un utilisateur par Id',
-    model: FrontAuthResponseInfos,
+    model: AuthReadDto,
     status: HttpStatus.OK,
     errors: [HttpStatus.NOT_FOUND],
   })
@@ -47,9 +42,9 @@ export class AuthController {
   @ApiDoc({
     summary: 'Refresh Token du user',
     description: 'Retourne le nouveau access token',
-    model: FrontRefreshTokenResponseInfos,
+    model: RefreshTokenReadDto,
     status: HttpStatus.OK,
-    errors: [HttpStatus.UNAUTHORIZED]
+    errors: [HttpStatus.UNAUTHORIZED],
   })
   async refreshToken(
     @Res() _response: Response,
@@ -62,14 +57,14 @@ export class AuthController {
 
   @Get('/me')
   @ApiDoc({
-    summary: 'Les infos de l\'utilisateur connecté',
-    model: FrontUserInfos,
+    summary: "Les infos de l'utilisateur connecté",
+    model: FrontReadUser,
     status: HttpStatus.OK,
     errors: [HttpStatus.UNAUTHORIZED],
   })
   @UseGuards(JwtAuthGuard)
   async getMe(@Res() _response: Response, @CurrentUser() user: UserWithStore) {
     const userToFront = UserMapper.toFront(user);
-    return FrontUserInfos.success_response(userToFront, _response, 200);
+    return ApiResponse.success_response(userToFront, _response, 200);
   }
 }
