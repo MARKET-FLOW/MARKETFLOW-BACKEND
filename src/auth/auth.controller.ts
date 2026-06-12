@@ -11,7 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AUTH_TAG } from 'src/common/constants/api-tags.constant';
 import { ApiDoc } from 'src/common/decorators/api-response.decorator';
-import { ApiResponse } from 'src/common/types/api.response';
+import { ApiResponseData } from 'src/common/types/api.response.data';
 import { FrontReadUser } from 'src/users/dto/read.user.';
 import { UserWithStore } from 'src/users/global-user/user.message';
 import { UserMapper } from 'src/users/mappers/user.mapper';
@@ -63,8 +63,8 @@ export class AuthController {
     errors: [HttpStatus.UNAUTHORIZED],
   })
   @UseGuards(JwtAuthGuard)
-  async getMe(@Res() _response: Response, @CurrentUser() user: UserWithStore) {
+  getMe(@Res() _response: Response, @CurrentUser() user: UserWithStore) {
     const userToFront = UserMapper.toFront(user);
-    return ApiResponse.success_response(userToFront, _response, 200);
+    return ApiResponseData.success_response(userToFront, _response, 200);
   }
 }

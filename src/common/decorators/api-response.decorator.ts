@@ -13,14 +13,14 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { ValidationErrorResponseDto } from '../dto/validation-error-response.dto';
-import { ApiResponse } from '../types/api.response';
+import { ApiResponseData } from '../types/api.response.data';
 
 export interface ApiDocOptions {
   summary: string;
   model: Type<any>;
   isList?: boolean;
-  status?: number;
-  errors?: number[];
+  status?: HttpStatus;
+  errors?: HttpStatus[];
   description?: string;
 }
 
@@ -36,13 +36,13 @@ export const ApiDoc = (options: ApiDocOptions) => {
 
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiExtraModels(ApiResponse, model),
+    ApiExtraModels(ApiResponseData, model),
     status === HttpStatus.CREATED
       ? ApiCreatedResponse({
           description: description || 'Ressource créée avec succès',
           schema: {
             allOf: [
-              { $ref: getSchemaPath(ApiResponse) },
+              { $ref: getSchemaPath(ApiResponseData) },
               {
                 properties: {
                   result: isList
@@ -57,7 +57,7 @@ export const ApiDoc = (options: ApiDocOptions) => {
           description: description || 'Opération réussie',
           schema: {
             allOf: [
-              { $ref: getSchemaPath(ApiResponse) },
+              { $ref: getSchemaPath(ApiResponseData) },
               {
                 properties: {
                   result: isList

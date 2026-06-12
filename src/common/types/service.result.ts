@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { GlobalAppResult } from './global-app.result';
-import { ApiResponse } from './api.response';
+import { ApiResponseData } from './api.response.data';
 import { ErrorMessage } from './error.message';
 import {
   SERVICE_NAMES_MAPPING,
@@ -22,11 +22,11 @@ export class ServiceResult<T> extends GlobalAppResult<T> {
     this.statusCode = statusCode;
   }
 
-  to_HTTP_api_base_response(res: Response): ApiResponse<T> {
+  to_HTTP_api_base_response(res: Response): ApiResponseData<T> {
     if (this.isError) {
-      return ApiResponse.error_response(this.error, res, this.statusCode);
+      return ApiResponseData.error_response(this.error, res, this.statusCode);
     }
-    return ApiResponse.success_response(this.data, res, this.statusCode);
+    return ApiResponseData.success_response(this.data, res, this.statusCode);
   }
 
   static success_service<T>(
