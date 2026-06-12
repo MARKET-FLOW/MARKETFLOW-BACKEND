@@ -47,7 +47,7 @@ export const ApiDoc = (options: ApiDocOptions) => {
               { $ref: getSchemaPath(ApiResponse) },
               {
                 properties: {
-                  data: isList
+                  result: isList
                     ? { type: 'array', items: { $ref: getSchemaPath(model) } }
                     : { $ref: getSchemaPath(model) },
                 },
@@ -62,7 +62,7 @@ export const ApiDoc = (options: ApiDocOptions) => {
           { $ref: getSchemaPath(ApiResponse) },
           {
             properties: {
-              data: isList
+              result: isList
                 ? {
                     type: 'array',
                     items: { $ref: getSchemaPath(model) },
