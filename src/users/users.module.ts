@@ -7,6 +7,12 @@ import { UsersCache } from './global-user/users.cache';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, UsersRepository, RedisCacheService, UsersCache],
+  providers: [
+    UsersService, 
+    UsersRepository,
+    RedisCacheService,
+    UsersCache
+  ],
+  exports: [UsersRepository], 
 })
 export class UsersModule {}

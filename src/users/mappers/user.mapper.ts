@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
-import { FrontReadUser } from '../dto/create-user.dto';
 import { User } from '@prisma/client';
+import { FrontReadUser } from '../dto/read.user.';
 
 export class UserMapper {
   static toFront(user: User): FrontReadUser {

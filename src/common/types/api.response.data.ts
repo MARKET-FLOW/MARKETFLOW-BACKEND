@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { ErrorMessage } from './error.message';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class ApiResponse<T> {
+export class ApiResponseData<T> {
   @ApiProperty()
   readonly success: boolean;
 
@@ -36,8 +36,8 @@ export class ApiResponse<T> {
     data: T,
     res: Response,
     statusCode: number = 200,
-  ): ApiResponse<T> {
-    const responseBody = new ApiResponse(true, data, null);
+  ): ApiResponseData<T> {
+    const responseBody = new ApiResponseData(true, data, null);
 
     res.status(statusCode).json(responseBody);
 
@@ -48,9 +48,9 @@ export class ApiResponse<T> {
     error_message: ErrorMessage,
     res: Response,
     statusCode: number,
-  ): ApiResponse<T> {
+  ): ApiResponseData<T> {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    const responseBody = new ApiResponse(false, null as T, error_message);
+    const responseBody = new ApiResponseData(false, null as T, error_message);
 
     res.status(statusCode).json(responseBody);
 

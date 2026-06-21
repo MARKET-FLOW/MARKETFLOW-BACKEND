@@ -13,10 +13,12 @@ import { SaleItemsModule } from './sale-items/sale-items.module';
 import { SalesModule } from './sales/sales.module';
 import { StockMovementsModule } from './stock-movements/stock-movements.module';
 import { StoresModule } from './stores/stores.module';
-import { SyncQueuesModule } from './sync-queues/sync-queues.module';
+import { SyncQueuesModule } from './users/sync-queues/sync-queues.module';
 import { CacheModule, CacheModuleOptions } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -61,6 +63,8 @@ import { ConfigModule } from '@nestjs/config';
     StockMovementsModule,
     StoresModule,
     SyncQueuesModule,
+    AuthModule,
+    CommonModule
   ],
   controllers: [AppController],
   providers: [AppService],

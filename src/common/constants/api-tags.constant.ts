@@ -1,6 +1,8 @@
-export const USER_TAG = 'Users';
-export const STORE_TAG = 'Stores';
-export const PRODUCT_TAG = 'Products';
+export const USER_TAG = 'Users api endpoints';
+export const PRODUCT_TAG = 'Products api endpoints';
+export const CASHIER = 'Cashiers api endpoints';
+export const STORE_TAG = 'Stores Endpoints';
+export const AUTH_TAG = 'Authentification endpoints';
 export const CATEGORY_TAG = 'Categories';
 export const SALE_TAG = 'Sales';
 export const SALE_ITEM_TAG = 'Sale Items';
@@ -9,4 +11,3 @@ export const CASH_SESSION_TAG = 'Cash Sessions';
 export const MOBILE_DEVICE_TAG = 'Mobile Devices';
 export const SYNC_TAG = 'Sync';
 export const AUDIT_TAG = 'Audit Logs';
-export const AUTH_TAG = 'Auth';
