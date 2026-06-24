@@ -4,6 +4,7 @@ export const SERVICE_NAMES_MAPPING = {
   CASHIER_SERVICE: 'CASHIER_SERVICE',
   STORE_SERVICE: 'STORE_SERVICE',
   UNKNOWN_SERVICE: 'UNKNOWN_SERVICE',
+  CATEGORY_SERVICE: 'CATEGORY_SERVICE'
 } as const;
 /**
  * TYpe utilitaire pour les names des services dans ServiceResult
